@@ -4,11 +4,11 @@
     "slug": "snapmed-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/mainLogo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/snapmed.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#E3FFD1"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,12 +21,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/mainLogo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.clintxx1.snapmedapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1d3ffa0d-04c7-4935-a925-d23132247564"
+      }
     }
   }
 }
