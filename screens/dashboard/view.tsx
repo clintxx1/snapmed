@@ -1,11 +1,15 @@
 import React from "react";
-import { Text } from "native-base";
+import { Box, Text } from "native-base";
+import { useAuth } from "../../providers/context";
 
 const DashboardView = () => {
+  const { currentUser } = useAuth();
+
   return (
-    <>
-      <Text>DashboardView</Text>
-    </>
+    <Box pt={"50%"} bg={"white"}>
+      <Text alignSelf={"center"}>Welcome {currentUser.email}!</Text>
+      <Text alignSelf={"center"}>App Contents will be uploaded soon...</Text>
+    </Box>
   );
 };
 

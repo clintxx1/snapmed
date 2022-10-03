@@ -9,6 +9,12 @@ export const GetErrorMessage = (value: string) => {
     case "RESET_PASSWORD_CONFIRMATION":
       errorMessage = "Confirmation sent. Please check your email.";
       break;
+    case "SOMETHING_WENT_WRONG":
+      errorMessage = "Something went wrong. Please reload the page.";
+      break;
+    case "REGISTER_SUCCESS":
+      errorMessage = "Successfully registered. Proceed to login";
+      break;
     default:
       errorMessage = "Something went wrong. Please try again later.";
       break;

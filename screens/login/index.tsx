@@ -10,7 +10,7 @@ import LoginView from "./view";
 
 /**Helpers */
 import { GetErrorMessage } from "../../lib/helper";
-import { DASHBOARD, FORGOT_PASSWORD } from "../../constants/screen-names";
+import { DASHBOARD, FORGOT_PASSWORD, SIGNUP } from "../../constants/screen-names";
 
 /**Types */
 type FormInputs = {
@@ -33,7 +33,6 @@ const LoginScreen = ({ navigation }: any) => {
 
   const loginHandler = async (data: FormInputs) => {
     try {
-      // alert("Main Page will be added soon.");
       await login(data.username, data.password)
       setLoadingButton(() => false);
       navigation.navigate(DASHBOARD);
@@ -53,7 +52,7 @@ const LoginScreen = ({ navigation }: any) => {
   }
 
   const signup = async () => {
-    await logout()
+    navigation.navigate(SIGNUP)
   }
 
   const handleShowPassword = () => setShowPassword(!showPassword);
