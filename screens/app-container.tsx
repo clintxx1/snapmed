@@ -11,7 +11,7 @@ import MainNavigation from "../router";
 import useCustomFonts from "../hooks/useCustomFonts";
 
 /**Context */
-import { AppContext } from "../providers/context";
+import { AuthProvider } from "../providers/context";
 
 const AppContainer = () => {
   const [appIsReady, setAppIsReady] = useState<boolean>(true);
@@ -43,9 +43,9 @@ const AppContainer = () => {
   return (
     <NativeBaseProvider>
       <SafeAreaProvider onLayout={onLayoutRootView}>
-        <AppContext.Provider value={""}>
+        <AuthProvider>
           <MainNavigation />
-        </AppContext.Provider>
+        </AuthProvider>
       </SafeAreaProvider>
     </NativeBaseProvider>
   );

@@ -6,6 +6,9 @@ export const GetErrorMessage = (value: string) => {
       errorMessage =
         "The username you entered is not yet registered to any account.";
       break;
+    case "RESET_PASSWORD_CONFIRMATION":
+      errorMessage = "Confirmation sent. Please check your email.";
+      break;
     default:
       errorMessage = "Something went wrong. Please try again later.";
       break;

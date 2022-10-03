@@ -12,6 +12,8 @@ import {
   Checkbox,
   Image,
   Icon,
+  Stagger,
+  Slide,
 } from "native-base";
 import React, { useContext, useRef } from "react";
 import { Controller } from "react-hook-form";
@@ -22,9 +24,10 @@ import { ScreenContext } from "../../providers/context";
 
 /**Helpers */
 import { fadeText, buttonColor, inputBg } from "../../constants/color";
+import CustomSlide from "../../components/slide";
 
 /**Image */
-const headerImage = require("../../assets/gulay.png");
+const headerImage = require("../../assets/mainLogo.png");
 
 const LoginView = () => {
   const {
@@ -39,24 +42,33 @@ const LoginView = () => {
     handleShowPassword,
     submitHandler,
     handleAlertButton,
+    forgotPassword,
+    signup
   } = useContext(ScreenContext);
-
+  const [images, setImages] = React.useState([
+    "https://source.unsplash.com/1024x768/?nature",
+    "https://source.unsplash.com/1024x768/?water",
+    "https://source.unsplash.com/1024x768/?tree",
+]);
   return (
     <>
-      <Image
-        source={headerImage}
-        alt="welcome image"
-        size={250}
-        resizeMode={"cover"}
-      />
       <VStack h="100%" w="100%" p="5%" bg="white">
+        <Image
+          source={headerImage}
+          alt="image"
+          size={250}
+          resizeMode={"contain"}
+          background="white"
+          alignSelf={"center"}
+        />
+        {/* <CustomSlide images={images} /> */}
         <Text
           fontSize="24"
           fontFamily="Bold"
           alignSelf={"center"}
           color={fadeText}
         >
-          Login to your account
+          Login to your account{process.env.REACT_APP_FIREBASE_API_KEY}
         </Text>
         <FormControl mt="5%">
           <FormControl.Label _text={{ fontFamily: "Bold", fontSize: "14" }}>
@@ -123,7 +135,7 @@ const LoginView = () => {
                       <FontAwesome5
                         name={field.value ? showPassword ? "eye-slash" : "eye" : ""}
                         size={24}
-                        color="black"
+                        color={fadeText}
                       />
                     }
                   />
@@ -136,7 +148,7 @@ const LoginView = () => {
             justifyContent={"space-between"}
             mt="1.5"
           >
-            <Checkbox value={"remembered"} _text={{ color: fadeText }}>
+            <Checkbox value={"remembered"} _text={{ color: fadeText }} colorScheme={"green"}>
               Remember me
             </Checkbox>
             <Link
@@ -146,8 +158,7 @@ const LoginView = () => {
                 fontFamily: "Bold",
               }}
               isUnderlined={false}
-              // TODO - add function for forgot password
-              onPress={() => alert("Coming soon.")}
+              onPress={forgotPassword}
             >
               Forgot password?
             </Link>
@@ -172,7 +183,7 @@ const LoginView = () => {
           </Text>
           <Link
             //TODO - add function for signup
-            onPress={() => alert("Coming soon.")}
+            onPress={signup}
             _text={{
               color: buttonColor,
               fontFamily: "Bold",

@@ -3,14 +3,16 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 /**Context */
-import { ScreenContext } from "../../providers/context";
+import { ScreenContext, useAuth } from "../../providers/context";
 
 /**Components */
 import LoginView from "./view";
 
 /**Helpers */
 import { GetErrorMessage } from "../../lib/helper";
+import { DASHBOARD, FORGOT_PASSWORD } from "../../constants/screen-names";
 
+/**Types */
 type FormInputs = {
   username: string;
   password: string;
@@ -22,23 +24,22 @@ const LoginScreen = ({ navigation }: any) => {
     handleSubmit,
     control,
     formState: { errors, isValid },
-    handleSubmit: handleresendOTP,
   } = useForm<FormInputs>({ mode: "onChange" });
+  const { login, logout } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<object>({});
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
-  const userName: string = "admin";
-  const password: string = "pass123";
-
-  const loginHandler = (data: FormInputs) => {
-    if (data.username === userName && data.password === password) {
-      alert("Main Page will be added soon.");
+  const loginHandler = async (data: FormInputs) => {
+    try {
+      // alert("Main Page will be added soon.");
+      await login(data.username, data.password)
       setLoadingButton(() => false);
-    } else {
+      navigation.navigate(DASHBOARD);
+    } catch (e) {
       setAlertMessage(() => ({
-        header: "Incorect Account",
+        header: "Incorrect Account",
         body: GetErrorMessage("NON_EXISTING_USER"),
       }));
       setShowAlert(() => true);
@@ -46,11 +47,22 @@ const LoginScreen = ({ navigation }: any) => {
     }
     setLoadingButton(() => false);
   };
+
+  const forgotPassword = () => {
+    navigation.navigate(FORGOT_PASSWORD);
+  }
+
+  const signup = async () => {
+    await logout()
+  }
+
   const handleShowPassword = () => setShowPassword(!showPassword);
+
   const submitHandler = (data: FormInputs) => {
     setLoadingButton(() => true);
     loginHandler(data);
   };
+
   const handleAlertButton = () => {
     setShowAlert(() => false);
     setLoadingButton(() => false);
@@ -69,6 +81,8 @@ const LoginScreen = ({ navigation }: any) => {
     submitHandler,
     handleAlertButton,
     setShowAlert,
+    forgotPassword,
+    signup,
   };
 
   return (
