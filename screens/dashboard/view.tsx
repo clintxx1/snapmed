@@ -33,7 +33,7 @@ const DashboardView = () => {
 
   return (
     <Box flex={1} bg={"white"}>
-      <Box flex={1} bg={"white"}>
+      <Box flex={0.9} bg={"white"}>
         <Text fontSize={32} color={buttonColor} w={180} ml={"5"}>
           Let's find your plants!
         </Text>
@@ -53,6 +53,8 @@ const DashboardView = () => {
             _focus={{
               borderColor: buttonColor,
             }}
+            variant="outline"
+            borderStyle={"solid"}
           />
         </Box>
         <ScrollView>
@@ -83,7 +85,7 @@ const DashboardView = () => {
           <CustomSlide>
             <ScrollView
               horizontal={true}
-              h={"1/4"}
+              // h={"1/4"}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{
                 alignItems: "center",
@@ -108,7 +110,8 @@ const DashboardView = () => {
           </CustomSlide>
         </ScrollView>
       </Box>
-      <Box h={60}>
+      <View flex={0.1}>
+      {/* <Box h={60}> */}
         <HStack
           bg="white"
           alignItems="center"
@@ -216,7 +219,7 @@ const DashboardView = () => {
             </Center>
           </Pressable>
         </HStack>
-      </Box>
+      </View>
     </Box>
   );
 };

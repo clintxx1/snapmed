@@ -4,16 +4,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MaterialIcons } from "react-native-vector-icons";
 
 /**Constants */
-import { DASHBOARD, FAVORITE } from "../constants/screen-names";
+import { ACCOUNT, DASHBOARD, FAVORITE, LIST } from "../constants/screen-names";
 
 import Dashboard from "../screens/dashboard";
 import { Icon, Link } from "native-base";
 import { useAuth } from "../providers/context";
 import { Alert } from "react-native";
 import Favorite from "../screens/favorite";
+import Account from "../screens/account";
+import List from "../screens/list";
 
 const PrivateStack = createNativeStackNavigator();
-const PrivateScreens = () => {
+const PrivateScreens = ({navigation}:any) => {
   const { logout } = useAuth();
   const handleLogout = () => {
     Alert.alert("Warning", "Are you sure you want to logout?", [
@@ -60,13 +62,13 @@ const PrivateScreens = () => {
         name={FAVORITE}
         component={Favorite}
         options={{
-          // headerLeft: () => (
-          //   <Icon
-          //       as={<MaterialIcons name="menu" />}
-          //       color="gray.300"
-          //       size="sm"
-          //     />
-          // ),
+          headerLeft: () => (
+            <Icon
+                as={<MaterialIcons name="menu" />}
+                color="gray.300"
+                size="sm"
+              />
+          ),
           headerTitle: "Favorite",
           headerTitleAlign: "center",
           headerRight: () => (
@@ -77,8 +79,8 @@ const PrivateScreens = () => {
         }}
       />
       <PrivateStack.Screen
-        name={DASHBOARD}
-        component={Dashboard}
+        name={LIST}
+        component={List}
         options={{
           headerLeft: () => (
             <Icon
@@ -98,8 +100,8 @@ const PrivateScreens = () => {
         }}
       />
       <PrivateStack.Screen
-        name={DASHBOARD}
-        component={Dashboard}
+        name={ACCOUNT}
+        component={Account}
         options={{
           headerLeft: () => (
             <Icon

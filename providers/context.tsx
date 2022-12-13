@@ -62,4 +62,4 @@ export const AuthProvider = ({ children }: any) => {
   );
 };
 
-export const ScreenContext = createContext<any>({});
+export const ScreenContext = createContext<any|null>(null);

@@ -15,24 +15,23 @@ const MainStack = createNativeStackNavigator();
 
 const MainNavigation = () => {
   const { currentUser } = useAuth();
-  console.log(currentUser);
   return (
     <NavigationContainer>
-      <MainStack.Navigator initialRouteName="Public">
-        {currentUser ? (
-          <MainStack.Screen
-            name="Private"
-            component={PrivateScreens}
-            options={{ headerShown: false }}
-          />
-        ) : (
-          <MainStack.Screen
-            name="Public"
-            component={PublicScreens}
-            options={{ headerShown: false }}
-          />
-        )}
-      </MainStack.Navigator>
+        <MainStack.Navigator initialRouteName="Public">
+          {currentUser ? (
+            <MainStack.Screen
+              name="Private"
+              component={PrivateScreens}
+              options={{ headerShown: false }}
+            />
+          ) : (
+            <MainStack.Screen
+              name="Public"
+              component={PublicScreens}
+              options={{ headerShown: false }}
+            />
+          )}
+        </MainStack.Navigator>
     </NavigationContainer>
   );
 };

@@ -3,8 +3,8 @@ import React, { useContext } from "react";
 import { ScreenContext } from "../../providers/context";
 
 const FavoriteView = () => {
-  const { hehe } = useContext(ScreenContext);
-  return <Text>FavoriteView</Text>;
+  const { text } = useContext(ScreenContext);
+  return <Text>{text}</Text>;
 };
 
 export default FavoriteView;

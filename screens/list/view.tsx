@@ -4,7 +4,7 @@ import { ScreenContext } from "../../providers/context";
 
 const ListView = () => {
   const { text } = useContext(ScreenContext);
-  return <Text>{text}</Text>;
+  return <Text>List{text}</Text>;
 };
 
 export default ListView;

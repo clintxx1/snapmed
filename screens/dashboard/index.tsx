@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Dimensions } from "react-native";
-import { FAVORITE, LOGIN } from "../../constants/screen-names";
+import { ACCOUNT, FAVORITE, LIST, LOGIN } from "../../constants/screen-names";
 import { GetErrorMessage, privateScreenToggle } from "../../lib/helper";
 import { ScreenContext, useAuth } from "../../providers/context";
 import DashboardView from "./view";
@@ -10,7 +10,7 @@ var ampalaya = require("../../assets/ampalaya-data.jpg");
 var bayabas = require("../../assets/bayabas-dta.jpg");
 var tsaangGubat = require("../../assets/tsaang-gubat-data.jpg");
 
-const Dashboard = ({navigation}: any) => {
+const Dashboard = ({navigation, route}: any) => {
   const { currentUser } = useAuth();
   const [selected, setSelected] = useState<number>(0);
   const width: number = Dimensions.get("window").width;
@@ -84,9 +84,39 @@ const Dashboard = ({navigation}: any) => {
           }
         ])
       }
+      if(selected === 2 && !currentUser){
+        Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
+          {
+            text: "Login",
+            onPress: () => navigation.navigate(LOGIN, {currentDisplay: LIST})
+          },
+          {
+            text: "Cancel"
+          }
+        ])
+      }
+      if(selected === 3 && !currentUser){
+        Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
+          {
+            text: "Login",
+            onPress: () => navigation.navigate(LOGIN, {currentDisplay: ACCOUNT})
+          },
+          {
+            text: "Cancel"
+          }
+        ])
+      }
       navigation.navigate(privateScreenToggle(selected));
     }
   }, [selected]);
+
+  useEffect(() => {
+    if(route?.params){
+      const { keyState }:any = route?.params;
+      setSelected(keyState);
+    }
+  }, [route?.params])
+  
 
   const values = {
     sampleData,
