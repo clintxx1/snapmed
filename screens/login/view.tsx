@@ -23,7 +23,7 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { ScreenContext } from "../../providers/context";
 
 /**Helpers */
-import { fadeText, buttonColor, inputBg } from "../../constants/color";
+import { fadeText, buttonColor, inputBg, onFocusedButton } from "../../constants/color";
 import CustomSlide from "../../components/slide";
 
 /**Image */
@@ -45,11 +45,6 @@ const LoginView = () => {
     forgotPassword,
     signup
   } = useContext(ScreenContext);
-  const [images, setImages] = React.useState([
-    "https://source.unsplash.com/1024x768/?nature",
-    "https://source.unsplash.com/1024x768/?water",
-    "https://source.unsplash.com/1024x768/?tree",
-]);
   return (
     <>
       <VStack h="100%" w="100%" p="5%" bg="white">
@@ -97,6 +92,9 @@ const LoginView = () => {
                   />
                 }
                 placeholder="Username"
+                _focus={{
+                  borderColor: buttonColor,
+                }}
               />
             )}
           />
@@ -140,6 +138,9 @@ const LoginView = () => {
                     }
                   />
                 }
+                _focus={{
+                  borderColor: buttonColor,
+                }}
               />
             )}
           />
@@ -174,6 +175,9 @@ const LoginView = () => {
           h="54"
           _text={{ fontSize: "16", fontFamily: "Bold" }}
           _disabled={{ backgroundColor: "#bbbbbb", _text: { color: "white" } }}
+          _focus={{
+            backgroundColor: onFocusedButton,
+          }}
         >
           Login
         </Button>
@@ -182,7 +186,6 @@ const LoginView = () => {
             Don't have an account?&nbsp;
           </Text>
           <Link
-            //TODO - add function for signup
             onPress={signup}
             _text={{
               color: buttonColor,

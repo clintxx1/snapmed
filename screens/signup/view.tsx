@@ -15,9 +15,9 @@ import { ScreenContext } from "../../providers/context";
 import { FontAwesome5 } from "@expo/vector-icons";
 import SignupWrapper from "../../components/signupWrapper";
 import PhoneInput from "react-native-phone-number-input";
-import { buttonColor } from "../../constants/color";
+import { buttonColor, onFocusedButton } from "../../constants/color";
 
-export default function SignupView() {
+const SignupView = () => {
   const {
     currentUser,
     title,
@@ -94,6 +94,9 @@ export default function SignupView() {
                 height="55"
                 value={field.value}
                 onChangeText={field.onChange}
+                _focus={{
+                  borderColor: buttonColor,
+                }}
               />
             )}
           />
@@ -128,6 +131,9 @@ export default function SignupView() {
                     height="55"
                     value={field.value}
                     onChangeText={field.onChange}
+                    _focus={{
+                      borderColor: buttonColor,
+                    }}
                   />
                 )}
               />
@@ -158,6 +164,9 @@ export default function SignupView() {
                     height="55"
                     value={field.value}
                     onChangeText={field.onChange}
+                    _focus={{
+                      borderColor: buttonColor,
+                    }}
                   />
                 )}
               />
@@ -195,6 +204,9 @@ export default function SignupView() {
                 height="55"
                 value={field.value}
                 onChangeText={field.onChange}
+                _focus={{
+                  borderColor: buttonColor,
+                }}
               />
             )}
           />
@@ -300,6 +312,9 @@ export default function SignupView() {
                     }
                   />
                 }
+                _focus={{
+                  borderColor: buttonColor,
+                }}
               />
             )}
           />
@@ -344,6 +359,9 @@ export default function SignupView() {
                     }
                   />
                 }
+                _focus={{
+                  borderColor: buttonColor,
+                }}
               />
             )}
           />
@@ -367,6 +385,9 @@ export default function SignupView() {
           _disabled={{
             backgroundColor: "#bbbbbb",
             _text: { color: "white" },
+          }}
+          _focus={{
+            bg: onFocusedButton,
           }}
         >
           Continue
@@ -396,3 +417,5 @@ export default function SignupView() {
     </SignupWrapper>
   );
 }
+
+export default SignupView;

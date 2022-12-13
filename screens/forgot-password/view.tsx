@@ -1,7 +1,7 @@
 import { Button, FormControl, Text, Input, VStack } from "native-base";
 import React, { useContext } from "react";
 import { Controller } from "react-hook-form";
-import { buttonColor } from "../../constants/color";
+import { buttonColor, onFocusedButton } from "../../constants/color";
 import { ScreenContext } from "../../providers/context";
 
 const ForgotPasswordView = () => {
@@ -60,6 +60,9 @@ const ForgotPasswordView = () => {
               fontSize="lg"
               value={field.value}
               onChangeText={field.onChange}
+              _focus={{
+                borderColor: buttonColor,
+              }}
             />
           )}
         />
@@ -77,6 +80,9 @@ const ForgotPasswordView = () => {
         onPress={handleSubmit(submitHandler)}
         _text={{ fontSize: "16", fontWeight: "bold" }}
         _disabled={{ backgroundColor: "#bbbbbb", _text: { color: "white" } }}
+        _focus={{
+          bg: onFocusedButton,
+        }}
       >
         Continue
       </Button>

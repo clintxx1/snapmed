@@ -51,24 +51,11 @@ const Signup = ({ navigation }: any) => {
       Alert.alert("Warning", GetErrorMessage("SOMETHING_WENT_WRONG"), [
         { text: "OK", onPress: () => setLoadingRegisterButton(false) },
       ]);
-
-      return;
     }
   };
 
   const proceedToLogin = () => {
     navigation.navigate(LOGIN);
-  };
-  const proceedToVerifyRegister = (
-    user_id: string,
-    username: string,
-    phone: string
-  ) => {
-    // navigation.navigate(VERIFY_REGISTER_CODE_SCREEN, {
-    //   user_id: user_id,
-    //   username: username,
-    //   phone: phone,
-    // });
   };
 
   const submitHandler = (data: FormInputs) => {
@@ -98,7 +85,6 @@ const Signup = ({ navigation }: any) => {
     isValid,
     phoneInputBorderColor,
     setPhoneInputBorderColor,
-    proceedToVerifyRegister,
   };
   return (
     <ScreenContext.Provider value={values}>

@@ -1,3 +1,5 @@
+import { ACCOUNT, DASHBOARD, FAVORITE, LIST } from "../constants/screen-names";
+
 export const GetErrorMessage = (value: string) => {
   let errorMessage = "";
 
@@ -15,9 +17,34 @@ export const GetErrorMessage = (value: string) => {
     case "REGISTER_SUCCESS":
       errorMessage = "Successfully registered. Proceed to login";
       break;
+    case "NOT_LOGIN":
+      errorMessage = "Please login to see your saved plants.";
+      break;
     default:
       errorMessage = "Something went wrong. Please try again later.";
       break;
   }
   return errorMessage;
+};
+
+export const privateScreenToggle = (index: number) => {
+  const screens = [
+    {
+      key: 0,
+      title: DASHBOARD,
+    },
+    {
+      key: 1,
+      title: FAVORITE,
+    },
+    {
+      key: 2,
+      title: LIST,
+    },
+    {
+      key: 3,
+      title: ACCOUNT,
+    },
+  ];
+  return screens[index].title;
 };

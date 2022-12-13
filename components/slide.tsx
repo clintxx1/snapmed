@@ -1,27 +1,7 @@
 import { Stagger, Image } from "native-base";
 import React, { useEffect, useState } from "react";
 
-const CustomSlide = ( {images}: any) => {
-    const [file, setFile] = useState<any>(images[0] || []);
-    useEffect(() => {
-        let ctr = 0;
-        if(images.length > 0){
-            setTimeout(() => {
-                setFile(images[ctr])
-            }, 2000);
-            ctr++;
-            // return () => clearInterval(interval);
-        }
-    }, [file]);
-
-    useEffect(() => {
-      if(file){
-        console.log(file, "ppp");
-        
-      }
-    }, [file])
-    
-
+const CustomSlide = ({children}:any) => {
     return (
     <Stagger
       visible={true}
@@ -56,14 +36,7 @@ const CustomSlide = ( {images}: any) => {
         },
       }}
     >
-      <Image
-        source={{uri:file}}
-        alt="image"
-        size={250}
-        resizeMode={"contain"}
-        background="white"
-        alignSelf={"center"}
-      />
+      {children}
     </Stagger>
   );
 };
