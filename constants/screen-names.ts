@@ -5,3 +5,4 @@ export const DASHBOARD = "DashboardScreen";
 export const FAVORITE = "FavoriteScreen";
 export const LIST = "ListScreen";
 export const ACCOUNT = "AccountScreen";
+export const TSCAMERA = "CameraScreen";
