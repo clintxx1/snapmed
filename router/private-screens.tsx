@@ -21,6 +21,7 @@ import List from "../screens/list";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { tabIconHandleChange } from "../lib/helper";
 import CustomCamera from "../screens/camera";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const CustomTabButton = ({ children, onPress }: any) => {
   return (
@@ -148,8 +149,18 @@ const PrivateScreens = ({ navigation }: any) => {
             />
           ),
           tabBarButton: (props) => (
-            <CustomTabButton {...props} onPress={() => alert("hehe")} />
+            <CustomTabButton {...props} onPress={() => navigation.navigate(TSCAMERA)} />
           ),
+          tabBarStyle: {display: 'none'}
+          /* tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? ""
+            console.log(routeName)
+              if (routeName === 'FeedDetails') {
+                return { display: "none" }
+              }
+              return
+            })(route),
+          } */
         }}
       />
       <PrivateStack.Screen

@@ -71,51 +71,51 @@ const Dashboard = ({navigation, route}: any) => {
     }
   };
 
-  useEffect(() => {
-    if(selected !== 0){
-      if(selected === 1 && !currentUser){
-        Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
-          {
-            text: "Login",
-            onPress: () => navigation.navigate(LOGIN, {currentDisplay: FAVORITE})
-          },
-          {
-            text: "Cancel"
-          }
-        ])
-      }
-      if(selected === 2 && !currentUser){
-        Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
-          {
-            text: "Login",
-            onPress: () => navigation.navigate(LOGIN, {currentDisplay: LIST})
-          },
-          {
-            text: "Cancel"
-          }
-        ])
-      }
-      if(selected === 3 && !currentUser){
-        Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
-          {
-            text: "Login",
-            onPress: () => navigation.navigate(LOGIN, {currentDisplay: ACCOUNT})
-          },
-          {
-            text: "Cancel"
-          }
-        ])
-      }
-      navigation.navigate(privateScreenToggle(selected));
-    }
-  }, [selected]);
+  // useEffect(() => {
+  //   if(selected !== 0){
+  //     if(selected === 1 && !currentUser){
+  //       Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
+  //         {
+  //           text: "Login",
+  //           onPress: () => navigation.navigate(LOGIN, {currentDisplay: FAVORITE})
+  //         },
+  //         {
+  //           text: "Cancel"
+  //         }
+  //       ])
+  //     }
+  //     if(selected === 2 && !currentUser){
+  //       Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
+  //         {
+  //           text: "Login",
+  //           onPress: () => navigation.navigate(LOGIN, {currentDisplay: LIST})
+  //         },
+  //         {
+  //           text: "Cancel"
+  //         }
+  //       ])
+  //     }
+  //     if(selected === 3 && !currentUser){
+  //       Alert.alert("Warning", GetErrorMessage("NOT_LOGIN"), [
+  //         {
+  //           text: "Login",
+  //           onPress: () => navigation.navigate(LOGIN, {currentDisplay: ACCOUNT})
+  //         },
+  //         {
+  //           text: "Cancel"
+  //         }
+  //       ])
+  //     }
+  //     navigation.navigate(privateScreenToggle(selected));
+  //   }
+  // }, [selected]);
 
-  useEffect(() => {
-    if(route?.params){
-      const { keyState }:any = route?.params;
-      setSelected(keyState);
-    }
-  }, [route?.params])
+  // useEffect(() => {
+  //   if(route?.params){
+  //     const { keyState }:any = route?.params;
+  //     setSelected(keyState);
+  //   }
+  // }, [route?.params])
   
 
   const values = {

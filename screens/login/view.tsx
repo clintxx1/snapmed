@@ -23,8 +23,14 @@ import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { ScreenContext } from "../../providers/context";
 
 /**Helpers */
-import { fadeText, buttonColor, inputBg, onFocusedButton } from "../../constants/color";
+import {
+  fadeText,
+  buttonColor,
+  inputBg,
+  onFocusedButton,
+} from "../../constants/color";
 import CustomSlide from "../../components/slide";
+import CustomInput from "../../components/customInput";
 
 /**Image */
 const headerImage = require("../../assets/mainLogo.png");
@@ -43,7 +49,7 @@ const LoginView = () => {
     submitHandler,
     handleAlertButton,
     forgotPassword,
-    signup
+    signup,
   } = useContext(ScreenContext);
   return (
     <>
@@ -76,25 +82,19 @@ const LoginView = () => {
               required: "Required field.",
             }}
             render={({ field }) => (
-              <Input
-                // bg={inputBg}
+              <CustomInput
                 p="4%"
                 fontSize="16"
                 fontFamily="Bold"
-                value={field.value}
-                onChangeText={field.onChange}
-                InputLeftElement={
-                  <Icon
-                    as={<MaterialIcons name="person" />}
-                    size={5}
-                    ml="2"
-                    color="muted.500"
-                  />
-                }
-                placeholder="Username"
+                field={field}
+                iconName="person"
+                iconColor="muted.500"
+                iconMarginLeft="2"
+                iconSize={5}
                 _focus={{
                   borderColor: buttonColor,
                 }}
+                placeholder="Username"
               />
             )}
           />
@@ -108,39 +108,39 @@ const LoginView = () => {
             name="password"
             rules={{ required: "Required field." }}
             render={({ field }) => (
-              <Input
+              <CustomInput
                 p="4%"
                 fontSize="16"
-                // bg={inputBg}
                 fontFamily="Bold"
-                type={showPassword ? "text" : "password"}
-                value={field.value}
-                onChangeText={field.onChange}
-                InputLeftElement={
-                  <Icon
-                    as={<MaterialIcons name="lock" />}
-                    size={5}
-                    ml="2"
-                    color="muted.500"
-                  />
-                }
+                field={field}
+                iconName="lock"
+                iconColor="muted.500"
+                iconMarginLeft="2"
+                iconSize={5}
+                _focus={{
+                  borderColor: buttonColor,
+                }}
                 placeholder="Password"
+                inputType={showPassword ? "text" : "password"}
                 InputRightElement={
                   <IconButton
                     onPress={handleShowPassword}
                     mr="3%"
                     icon={
                       <FontAwesome5
-                        name={field.value ? showPassword ? "eye-slash" : "eye" : ""}
+                        name={
+                          field.value
+                            ? showPassword
+                              ? "eye-slash"
+                              : "eye"
+                            : ""
+                        }
                         size={24}
                         color={fadeText}
                       />
                     }
                   />
                 }
-                _focus={{
-                  borderColor: buttonColor,
-                }}
               />
             )}
           />
@@ -149,7 +149,11 @@ const LoginView = () => {
             justifyContent={"space-between"}
             mt="1.5"
           >
-            <Checkbox value={"remembered"} _text={{ color: fadeText }} colorScheme={"green"}>
+            <Checkbox
+              value={"remembered"}
+              _text={{ color: fadeText }}
+              colorScheme={"green"}
+            >
               Remember me
             </Checkbox>
             <Link

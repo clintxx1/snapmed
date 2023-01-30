@@ -18,19 +18,19 @@ const MainNavigation = () => {
   return (
     <NavigationContainer>
         <MainStack.Navigator initialRouteName="Private">
-          {/* {currentUser ? ( */}
+          {/* {currentUser ? (
             <MainStack.Screen
               name="Private"
               component={PrivateScreens}
               options={{ headerShown: false }}
-            />
-          {/* ) : (
+            /> */}
+          {/* ) : (*/}
             <MainStack.Screen
               name="Public"
               component={PublicScreens}
               options={{ headerShown: false }}
             />
-          )} */}
+          {/* )}  */}
         </MainStack.Navigator>
     </NavigationContainer>
   );
