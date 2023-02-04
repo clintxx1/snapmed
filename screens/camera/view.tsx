@@ -3,19 +3,22 @@ import React, { useContext } from "react";
 import { View } from "native-base";
 import { LogBox, TouchableOpacity } from "react-native";
 import { ScreenContext } from "../../providers/context";
+import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
 LogBox.ignoreAllLogs(true);
 const CameraView = () => {
   const {
     camera,
     takePictureHandler,
     prediction,
+    textureDims,
+    handleCameraStream,
   } = useContext(ScreenContext);
+  const TensorCamera = cameraWithTensors(Camera);
   console.log("camera? ", prediction);
 
   return (
     <View flex={1} style={{ backgroundColor: "transparent" }}>
-      {/* {startCamera ? ( */}
-        <Camera
+       {/*  <Camera
           type={CameraType.back}
           style={{ flex: 1 }}
           ratio={"4:3"}
@@ -34,7 +37,7 @@ const CameraView = () => {
             }}
             onPress={() => takePictureHandler()}
           />
-        </Camera>
+        </Camera> */}
       {/* ):(
         <View h={100} w={"100%"} flexDirection={"column"} alignItems={"center"}>
           <Image
@@ -51,27 +54,28 @@ const CameraView = () => {
             )} 
         </View>
       )}
-      <TensorCamera
-        style={{ height: "100%", width: "100%" }}
-        type={CameraType.back}
-        cameraTextureHeight={textureDims.height}
-        cameraTextureWidth={textureDims.width}
-        resizeHeight={200}
-        resizeWidth={152}
-        resizeDepth={3}
-        onReady={handleCameraStream}
-        autorender={true}
-        useCustomShadersToResize={false}
-      />
       <Canvas
-        ref={handleCanvas}
-        style={{
-          position: "absolute",
-          zIndex: 1000000,
-          width: "100%",
-          height: "100%",
-        }}
-      /> */}
+      ref={handleCanvas}
+      style={{
+        position: "absolute",
+        zIndex: 1000000,
+        width: "100%",
+        height: "100%",
+      }}
+    /> */}
+    
+    <TensorCamera
+      style={{ height: "100%", width: "100%" }}
+      type={CameraType.back}
+      cameraTextureHeight={1920}
+      cameraTextureWidth={1080}
+      resizeHeight={224}
+      resizeWidth={224}
+      resizeDepth={3}
+      onReady={handleCameraStream}
+      autorender={true}
+      useCustomShadersToResize={false}
+    />
     </View>
   );
 };

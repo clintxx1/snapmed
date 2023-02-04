@@ -19,9 +19,11 @@ import {
 import { PLANT_INFO } from "../../constants/screen-names";
 
 const RESULT_MAPPING = ["Lagundi", "Bayabas", "Tsaang-Gubat"];
+const OUTPUT_TENSOR_WIDTH = 270;
+const OUTPUT_TENSOR_HEIGHT = 480;
 const URL = "https://teachablemachine.withgoogle.com/models/U--trar6n/";
 const { height, width } = Dimensions.get("window");
-const CustomCamera = ({navigation}:any) => {
+const CustomCamera = ({ navigation }: any) => {
   const [model, setModel] = useState<any>();
   const [startCamera, setStartCamera] = useState<boolean>(false);
   const [prediction, setPrediction] = useState<any>();
@@ -31,31 +33,77 @@ const CustomCamera = ({navigation}:any) => {
   let canvas = useRef<Canvas>();
   const modelURL = URL + "model.json";
   const metadataURL = URL + "metadata.json";
-
+  let frame = 0;
+  const computeRecognitionEveryNFrames = 60;
   let textureDims =
     Platform.OS == "ios"
       ? { height: 1920, width: 1080 }
       : { height: 1200, width: 1600 };
 
-  /*   const handleCameraStream = (images: any) => {
+  const handleCameraStream = async (images: IterableIterator<tf.Tensor3D>) => {
     const loop = async () => {
-      const nextImageTensor = images.next().value;
-      if (!model || !nextImageTensor)
-        throw new Error("No Model or image tensor");
-      model
-        .detect(nextImageTensor)
-        .then((prediction: any) => {
-          drawRectangle(prediction, nextImageTensor);
-        })
-        .catch((error: any) => {
-          console.log("error ini", error);
-        });
+      if(frame % computeRecognitionEveryNFrames === 0){
+        const nextImageTensor = images.next().value.expandDims(0).div(127.5).sub(1);
+        const f =
+          (OUTPUT_TENSOR_HEIGHT - OUTPUT_TENSOR_WIDTH) /
+          2 /
+          OUTPUT_TENSOR_HEIGHT;
+        const cropped = tf.image.cropAndResize(
+          // Image tensor.
+          nextImageTensor,
+          // Boxes. It says we start cropping from (x=0, y=f) to (x=1, y=1-f).
+          // These values are all relative (from 0 to 1).
+          tf.tensor2d([f, 0, 1 - f, 1], [1, 4]),
+          // The first box above
+          [0],
+          // The final size after resize.
+          [224, 224]
+        );
+        const results = model.predict(cropped);
+        const prediction = results.dataSync();
+        const highestPrediction = prediction.indexOf(
+          Math.max.apply(null, prediction)
+        );
 
-      requestAnimationFrame(loop);
-    };
-    loop();
+        // const imageData2 = tf.image.resizeBilinear(nextImageTensor,[224,224]) 
+        // const prediction = await startPrediction(model, tf.expandDims(imageData2, 0)); 
+        console.log(RESULT_MAPPING[highestPrediction]);
+        tf.dispose([nextImageTensor]);
+        
+      }
+      frame += 1;
+      frame = frame % computeRecognitionEveryNFrames;
+   
+    requestAnimationFrame(loop);
+  }
+  loop();
+    /* const loop = async () => {
+      // if (!model || !nextImageTensor)
+      // throw new Error("No Model or image tensor");
+      if (frame % computeRecognitionEveryNFrames === 0) {
+        const nextImageTensor = images.next().value;
+        if(nextImageTensor ){
+          const tensor = tf.image.resizeBilinear(nextImageTensor, [224,224]);
+          const prediction = await startPrediction(model, tf.expandDims(tensor, 0))
+          
+          console.log("PREDICT: ", prediction);
+          tf.dispose([nextImageTensor]);
+        }
+        /* model
+          .detect(nextImageTensor)
+          .then((prediction: any) => {
+            drawRectangle(prediction, nextImageTensor);
+          })
+          .catch((error: any) => {
+            console.log("error ini", error);
+          });
+
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }; */
   };
-
+  /*   
   const drawRectangle = (
     predictions: cocoSsd.DetectedObject[],
     nextImageTensor: any
@@ -114,9 +162,11 @@ const CustomCamera = ({navigation}:any) => {
       }
 
       await tf.ready();
+      tf.getBackend();
       // setModel(await cocoSsd.load());
       // setModel(await tmImage.load(modelURL, metadataURL));
       setModel(await getModel());
+      
     })();
   }, []);
 
@@ -178,9 +228,8 @@ const CustomCamera = ({navigation}:any) => {
     );
     setPrediction(RESULT_MAPPING[highestPrediction]);
     navigation.navigate(PLANT_INFO, {
-      prediction: RESULT_MAPPING[highestPrediction]
-    })
-
+      prediction: RESULT_MAPPING[highestPrediction],
+    });
   };
 
   const imageToTensor = (rawImageData: Uint8Array) => {
@@ -219,7 +268,7 @@ const CustomCamera = ({navigation}:any) => {
   };
 
   const values = {
-    // handleCameraStream,
+    handleCameraStream,
     textureDims,
     // handleCanvas,
     startCamera,

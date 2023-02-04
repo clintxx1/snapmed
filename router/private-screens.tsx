@@ -8,6 +8,7 @@ import {
   DASHBOARD,
   FAVORITE,
   LIST,
+  PLANT_INFO,
   TSCAMERA,
 } from "../constants/screen-names";
 
@@ -22,6 +23,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { tabIconHandleChange } from "../lib/helper";
 import CustomCamera from "../screens/camera";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import PlantInfo from "../screens/plant-info";
 
 const CustomTabButton = ({ children, onPress }: any) => {
   return (
@@ -74,6 +76,13 @@ const PrivateScreens = ({ navigation }: any) => {
   return (
     <PrivateStack.Navigator
       screenOptions={({ route }) => ({
+        tabBarButton: [
+          PLANT_INFO,
+        ].includes(route.name)
+          ? () => {
+              return null;
+            }
+          : undefined,
         tabBarIcon: ({ focused, color, size }) => {
           return (
             <Icon
@@ -152,15 +161,6 @@ const PrivateScreens = ({ navigation }: any) => {
             <CustomTabButton {...props} onPress={() => navigation.navigate(TSCAMERA)} />
           ),
           tabBarStyle: {display: 'none'}
-          /* tabBarStyle: ((route) => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? ""
-            console.log(routeName)
-              if (routeName === 'FeedDetails') {
-                return { display: "none" }
-              }
-              return
-            })(route),
-          } */
         }}
       />
       <PrivateStack.Screen
@@ -175,6 +175,13 @@ const PrivateScreens = ({ navigation }: any) => {
         component={Account}
         options={{
           tabBarLabel: "Account",
+        }}
+      />
+      <PrivateStack.Screen
+        name={PLANT_INFO}
+        component={PlantInfo}
+        options={{
+          tabBarStyle: {display: 'none'}
         }}
       />
     </PrivateStack.Navigator>

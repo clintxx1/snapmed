@@ -1,15 +1,6 @@
 import React, { useContext } from "react";
-import {
-  Box,
-  ScrollView,
-  Text,
-  Icon,
-  Input,
-  View,
-} from "native-base";
-import {
-  MaterialIcons,
-} from "react-native-vector-icons";
+import { Box, ScrollView, Text, Icon, Input, View } from "native-base";
+import { MaterialIcons } from "react-native-vector-icons";
 import { ScreenContext } from "../../providers/context";
 import CustomCard from "../../components/card";
 import { buttonColor } from "../../constants/color";
@@ -17,12 +8,7 @@ import Carousel from "react-native-reanimated-carousel";
 import CustomSlide from "../../components/slide";
 
 const DashboardView = () => {
-  const {
-    sampleData,
-    width,
-    searchPlants,
-    plants,
-  } = useContext(ScreenContext);
+  const { sampleData, width, searchPlants, plants } = useContext(ScreenContext);
 
   return (
     <Box flex={1} bg={"white"}>

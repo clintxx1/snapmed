@@ -1,18 +1,22 @@
-import React from 'react'
-import { ScreenContext } from '../../providers/context'
-import PlantInfoView from './view'
+import React, { useEffect } from "react";
+import { ScreenContext } from "../../providers/context";
+import PlantInfoView from "./view";
 
-const PlantInfo = ({navigation, route}:any) => {
-  const { prediction } = route.params;
-
+const PlantInfo = ({ navigation, route }: any) => {
+  const { prediction } = route?.params ?? "";
+  useEffect(() => {
+    if (route.params) {
+      console.log("trigger", route?.params);
+    }
+  }, [route]);
   const values = {
-    prediction
-  }
+    prediction,
+  };
   return (
     <ScreenContext.Provider value={values}>
-        <PlantInfoView />
+      <PlantInfoView />
     </ScreenContext.Provider>
-  )
-}
+  );
+};
 
-export default PlantInfo
+export default PlantInfo;
