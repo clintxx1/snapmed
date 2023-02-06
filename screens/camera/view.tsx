@@ -18,26 +18,26 @@ const CameraView = () => {
 
   return (
     <View flex={1} style={{ backgroundColor: "transparent" }}>
-       {/*  <Camera
-          type={CameraType.back}
-          style={{ flex: 1 }}
-          ratio={"4:3"}
-          ref={camera}
-          autoFocus={true}
-        >
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              backgroundColor: "#fff",
-              width: 70,
-              height: 70,
-              bottom: 10,
-              borderRadius: 50,
-              alignSelf: "center",
-            }}
-            onPress={() => takePictureHandler()}
-          />
-        </Camera> */}
+      <Camera
+        type={CameraType.back}
+        style={{ flex: 1 }}
+        ratio={"4:3"}
+        ref={camera}
+        autoFocus={true}
+      >
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            backgroundColor: "#fff",
+            width: 70,
+            height: 70,
+            bottom: 10,
+            borderRadius: 50,
+            alignSelf: "center",
+          }}
+          onPress={() => takePictureHandler()}
+        />
+      </Camera>
       {/* ):(
         <View h={100} w={"100%"} flexDirection={"column"} alignItems={"center"}>
           <Image
@@ -62,7 +62,7 @@ const CameraView = () => {
         width: "100%",
         height: "100%",
       }}
-    /> */}
+    />
     
     <TensorCamera
       style={{ height: "100%", width: "100%" }}
@@ -75,7 +75,7 @@ const CameraView = () => {
       onReady={handleCameraStream}
       autorender={true}
       useCustomShadersToResize={false}
-    />
+    /> */}
     </View>
   );
 };
