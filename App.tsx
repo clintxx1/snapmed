@@ -6,6 +6,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import {HASURA_GRAPHQL_URL, HASURA_SECRET} from "@env";
 
 const App = () => {
+  
   const client = new ApolloClient({
     uri: `${HASURA_GRAPHQL_URL}`,
     headers: {

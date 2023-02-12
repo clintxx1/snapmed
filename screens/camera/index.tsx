@@ -17,7 +17,7 @@ import {
   startPrediction,
 } from "../../lib/tensor-helper";
 import { PLANT_INFO } from "../../constants/screen-names";
-import { decodeJpeg } from "@tensorflow/tfjs-react-native";
+import { decodeJpeg, fetch } from "@tensorflow/tfjs-react-native";
 
 const RESULT_MAPPING = ["Akapulko", "Bayabas", "Lagundi", "Sambong", "Ulasimang Bato", "Yerba Buena"];
 const OUTPUT_TENSOR_WIDTH = 270;
@@ -221,20 +221,37 @@ const CustomCamera = ({ navigation }: any) => {
 
   const processImagePrediction = async (base64Image: any) => {
     const fileUri = base64Image.uri;
+    // const response = await fetch(fileUri, {}, {isBinary: true});
+    // const rawImageData = await response.arrayBuffer();
+    // const imageTensor = imageToTensorf(rawImageData);
+    // console.log(`Shape of image tensor -> ${imageTensor.shape}`);
+    // const results = model.predict(imageTensor);
+    // console.log("PRED: ", results.dataSync());
+    
     const imgB64 = await FileSystem.readAsStringAsync(fileUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
     const imgBuffer = tf.util.encodeString(imgB64, 'base64').buffer;
     const raw = new Uint8Array(imgBuffer);
-    const imageTensor = decodeJpeg(raw);
-    const reshapedTensor = tf.image.resizeBilinear(imageTensor, [224, 224]).reshape([1, 224, 224, 3]);
+    let imageTensor = decodeJpeg(raw);
+    const scalar = tf.scalar(255);
+    imageTensor = tf.image.resizeNearestNeighbor(imageTensor, [224, 224]);
+    const tensorScaled = imageTensor.div(scalar);
+    const img = tf.reshape(tensorScaled, [1, 224, 224, 3]);
+    console.log("IMG: ", img);
+    
+    const results = model.predict(img);
+    let pred = results.dataSync();
+    console.log("PREDICTION: ", pred);
+    
+
+    // const reshapedTensor = tf.image.resizeBilinear(imageTensor, [224, 224]).reshape([1, 224, 224, 3]);
     // const reshapedTensor = imageTensor.resizeBilinear([224, 224]).reshape([1, 224, 224, 3])
     // const reshapedTensor = tf.expandDims(imageTensor, 0).resizeBilinear([224, 224]);
-    const results = model.predict(reshapedTensor);
     // const results = model.evaluate(reshapedTensor)
     // const results1 = model.
-    const prediction = results.dataSync();
-    console.log("PREDICTION: ", prediction)
+    // const prediction = results.dataSync();
+    // console.log("PREDICTION: ", prediction)
     // const highestPrediction = prediction.indexOf(
     //   Math.max.apply(null, prediction)
     // );
@@ -254,6 +271,28 @@ const CustomCamera = ({ navigation }: any) => {
     navigation.navigate(PLANT_INFO, {
       prediction: RESULT_MAPPING[highestPrediction],
     }); */
+  };
+
+  const imageToTensorf = (rawImageData:any) => {
+    console.log("Converting Image to tensor");
+    const TO_UINT8ARRAY = true;
+    const { width, height, data } = jpeg.decode(rawImageData, {useTArray: TO_UINT8ARRAY});
+    console.log(`width of the image -> ${width} and ${height}`);
+
+    const buffer = new Uint8Array(width * height * 3);
+    let offset = 0;
+    for (let i = 0; i < buffer.length; i += 3) {
+      buffer[i] = data[offset];
+      buffer[i + 1] = data[offset + 1];
+      buffer[i + 2] = data[offset + 2];
+
+      offset += 4;
+    }
+
+    const normed = [];
+    for (let i = 0; i < buffer.length; i++) normed[i] = buffer[i] / 224.0; // Normalize
+
+    return tf.tensor3d(normed, [height, width, 3]).expandDims();
   };
 
   const imageToTensor = (rawImageData: Uint8Array) => {

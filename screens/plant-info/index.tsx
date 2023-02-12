@@ -3,7 +3,7 @@ import { ScreenContext } from "../../providers/context";
 import PlantInfoView from "./view";
 
 const PlantInfo = ({ navigation, route }: any) => {
-  const { prediction } = route?.params ?? "";
+  const { prediction, id } = route?.params ?? "";
   useEffect(() => {
     if (route.params) {
       console.log("trigger", route?.params);

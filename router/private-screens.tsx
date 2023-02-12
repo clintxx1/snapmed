@@ -168,6 +168,8 @@ const PrivateScreens = ({ navigation }: any) => {
         component={List}
         options={{
           tabBarLabel: "List",
+          headerTitle: "All Plants",
+          headerTitleAlign: "center",
         }}
       />
       <PrivateStack.Screen
