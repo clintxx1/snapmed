@@ -1,6 +1,6 @@
 import { Camera, CameraType } from "expo-camera";
 import React, { useContext } from "react";
-import { View } from "native-base";
+import { Heading, HStack, Spinner, View } from "native-base";
 import { LogBox, TouchableOpacity } from "react-native";
 import { ScreenContext } from "../../providers/context";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
@@ -12,13 +12,15 @@ const CameraView = () => {
     prediction,
     textureDims,
     handleCameraStream,
+    isFetching,
   } = useContext(ScreenContext);
   const TensorCamera = cameraWithTensors(Camera);
   console.log("camera? ", prediction);
 
   return (
-    <View flex={1} style={{ backgroundColor: "transparent" }}>
-       {/*  <Camera
+    <View flex={1} style={{ backgroundColor: "white" }} >
+      {!isFetching ? (
+        <Camera
           type={CameraType.back}
           style={{ flex: 1 }}
           ratio={"4:3"}
@@ -37,7 +39,15 @@ const CameraView = () => {
             }}
             onPress={() => takePictureHandler()}
           />
-        </Camera> */}
+        </Camera>
+      ) : (
+        <HStack top={'1/2'} space={2} justifyContent="center" alignItems="center" bg={'white'}>
+          <Spinner size="lg" />
+          <Heading color="primary.500" fontSize="md">
+            Predicting image
+          </Heading>
+        </HStack>
+      )}
       {/* ):(
         <View h={100} w={"100%"} flexDirection={"column"} alignItems={"center"}>
           <Image
@@ -63,8 +73,8 @@ const CameraView = () => {
         height: "100%",
       }}
     /> */}
-    
-    <TensorCamera
+
+      {/* <TensorCamera
       style={{ height: "100%", width: "100%" }}
       type={CameraType.back}
       cameraTextureHeight={1920}
@@ -75,7 +85,7 @@ const CameraView = () => {
       onReady={handleCameraStream}
       autorender={true}
       useCustomShadersToResize={false}
-    />
+    />*/}
     </View>
   );
 };

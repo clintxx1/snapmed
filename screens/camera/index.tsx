@@ -17,8 +17,9 @@ import {
   startPrediction,
 } from "../../lib/tensor-helper";
 import { PLANT_INFO } from "../../constants/screen-names";
+import { ImageResult } from "expo-image-manipulator/build/ImageManipulator.types";
 
-const RESULT_MAPPING = ["Lagundi", "Bayabas", "Tsaang-Gubat"];
+const RESULT_MAPPING = ["Akapulko", "Bayabas", "Lagundi", "Sambong", "Ulasimang Bato", "Yerba Buena"];
 const OUTPUT_TENSOR_WIDTH = 270;
 const OUTPUT_TENSOR_HEIGHT = 480;
 const URL = "https://teachablemachine.withgoogle.com/models/U--trar6n/";
@@ -28,6 +29,7 @@ const CustomCamera = ({ navigation }: any) => {
   const [startCamera, setStartCamera] = useState<boolean>(false);
   const [prediction, setPrediction] = useState<any>();
   const [currentPhoto, setCurrentPhoto] = useState<any>();
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   let camera = useRef<Camera>();
   let context = useRef<CanvasRenderingContext2D>();
   let canvas = useRef<Canvas>();
@@ -42,8 +44,12 @@ const CustomCamera = ({ navigation }: any) => {
 
   const handleCameraStream = async (images: IterableIterator<tf.Tensor3D>) => {
     const loop = async () => {
-      if(frame % computeRecognitionEveryNFrames === 0){
-        const nextImageTensor = images.next().value.expandDims(0).div(127.5).sub(1);
+      if (frame % computeRecognitionEveryNFrames === 0) {
+        const nextImageTensor = images
+          .next()
+          .value.expandDims(0)
+          .div(127.5)
+          .sub(1);
         const f =
           (OUTPUT_TENSOR_HEIGHT - OUTPUT_TENSOR_WIDTH) /
           2 /
@@ -65,18 +71,17 @@ const CustomCamera = ({ navigation }: any) => {
           Math.max.apply(null, prediction)
         );
 
-        // const imageData2 = tf.image.resizeBilinear(nextImageTensor,[224,224]) 
-        // const prediction = await startPrediction(model, tf.expandDims(imageData2, 0)); 
+        // const imageData2 = tf.image.resizeBilinear(nextImageTensor,[224,224])
+        // const prediction = await startPrediction(model, tf.expandDims(imageData2, 0));
         console.log(RESULT_MAPPING[highestPrediction]);
         tf.dispose([nextImageTensor]);
-        
       }
       frame += 1;
       frame = frame % computeRecognitionEveryNFrames;
-   
-    requestAnimationFrame(loop);
-  }
-  loop();
+
+      requestAnimationFrame(loop);
+    };
+    loop();
     /* const loop = async () => {
       // if (!model || !nextImageTensor)
       // throw new Error("No Model or image tensor");
@@ -162,11 +167,10 @@ const CustomCamera = ({ navigation }: any) => {
       }
 
       await tf.ready();
-      tf.getBackend();
+      await tf.setBackend("cpu");
       // setModel(await cocoSsd.load());
       // setModel(await tmImage.load(modelURL, metadataURL));
       setModel(await getModel());
-      
     })();
   }, []);
 
@@ -215,21 +219,31 @@ const CustomCamera = ({ navigation }: any) => {
   };
 
   const processImagePrediction = async (base64Image: any) => {
-    const croppedData: any = await cropPicture(base64Image, 350);
-    const tensor = await convertBase64ToTensor(croppedData.base64);
-    console.log("TENSOR: ", tensor?.print());
-    // const croppedData: any = await cropPicture(base64Image, 300);
-    // const tensor = imageToTensor(croppedData.base64);
-    console.log("TENSOR: ", tensor?.print());
-    const predictionL = await startPrediction(model, tensor);
-    console.log("PREDICTION: ", predictionL);
-    const highestPrediction = predictionL.indexOf(
-      Math.max.apply(null, predictionL)
-    );
-    setPrediction(RESULT_MAPPING[highestPrediction]);
-    navigation.navigate(PLANT_INFO, {
-      prediction: RESULT_MAPPING[highestPrediction],
-    });
+    setIsFetching(true);
+    try {
+      const croppedData: ImageResult | undefined = await cropPicture(
+        base64Image,
+        350
+      );
+      const tensor = await convertBase64ToTensor(croppedData?.base64);
+      console.log("TENSOR: ", tensor?.print());
+      // const croppedData: any = await cropPicture(base64Image, 300);
+      // const tensor = imageToTensor(croppedData.base64);
+      console.log("TENSOR: ", tensor?.print());
+      const predictionL = await startPrediction(model, tensor);
+      console.log("PREDICTION: ", predictionL);
+      const highestPrediction = predictionL.indexOf(
+        Math.max.apply(null, predictionL)
+      );
+      setPrediction(RESULT_MAPPING[highestPrediction]);
+      navigation.navigate(PLANT_INFO, {
+        prediction: RESULT_MAPPING[highestPrediction],
+      });
+      setIsFetching(false);
+    } catch (error) {
+      setIsFetching(false);
+      console.log(error);
+    }
   };
 
   const imageToTensor = (rawImageData: Uint8Array) => {
@@ -277,6 +291,7 @@ const CustomCamera = ({ navigation }: any) => {
     renderPrediction,
     prediction,
     currentPhoto,
+    isFetching,
   };
 
   return (
