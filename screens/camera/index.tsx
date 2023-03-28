@@ -17,8 +17,9 @@ import {
   startPrediction,
 } from "../../lib/tensor-helper";
 import { PLANT_INFO } from "../../constants/screen-names";
+import { decodeJpeg } from "@tensorflow/tfjs-react-native";
 
-const RESULT_MAPPING = ["Lagundi", "Bayabas", "Tsaang-Gubat"];
+const RESULT_MAPPING = ["Akapulko", "Ampalaya", "Bawang", "Bayabas", "Lagundi", "Sambong", "Tsaang-gubat", "Ulasimang-bato", "Yerba-buena"];
 const OUTPUT_TENSOR_WIDTH = 270;
 const OUTPUT_TENSOR_HEIGHT = 480;
 const URL = "https://teachablemachine.withgoogle.com/models/U--trar6n/";
@@ -44,10 +45,11 @@ const CustomCamera = ({ navigation }: any) => {
     const loop = async () => {
       if(frame % computeRecognitionEveryNFrames === 0){
         const nextImageTensor = images.next().value.expandDims(0).div(127.5).sub(1);
+        
         const f =
-          (OUTPUT_TENSOR_HEIGHT - OUTPUT_TENSOR_WIDTH) /
-          2 /
-          OUTPUT_TENSOR_HEIGHT;
+        (OUTPUT_TENSOR_HEIGHT - OUTPUT_TENSOR_WIDTH) /
+        2 /
+        OUTPUT_TENSOR_HEIGHT;
         const cropped = tf.image.cropAndResize(
           // Image tensor.
           nextImageTensor,
@@ -58,7 +60,8 @@ const CustomCamera = ({ navigation }: any) => {
           [0],
           // The final size after resize.
           [224, 224]
-        );
+          );
+        console.log("YOW", cropped);
         const results = model.predict(cropped);
         const prediction = results.dataSync();
         const highestPrediction = prediction.indexOf(
@@ -173,9 +176,10 @@ const CustomCamera = ({ navigation }: any) => {
   const takePictureHandler = async () => {
     try {
       if (camera.current) {
-        const imageData = await camera.current.takePictureAsync({
-          base64: true,
-        });
+        const imageData = await camera.current.takePictureAsync();
+        // const imageData = await camera.current.takePictureAsync({
+        //   base64: true,
+        // });
         setCurrentPhoto(imageData);
 
         processImagePrediction(imageData);
@@ -215,21 +219,30 @@ const CustomCamera = ({ navigation }: any) => {
   };
 
   const processImagePrediction = async (base64Image: any) => {
-    const croppedData: any = await cropPicture(base64Image, 350);
-    const tensor = await convertBase64ToTensor(croppedData.base64);
-    console.log("TENSOR: ", tensor?.print());
-    // const croppedData: any = await cropPicture(base64Image, 300);
-    // const tensor = imageToTensor(croppedData.base64);
-    console.log("TENSOR: ", tensor?.print());
-    const predictionL = await startPrediction(model, tensor);
-    console.log("PREDICTION: ", predictionL);
-    const highestPrediction = predictionL.indexOf(
-      Math.max.apply(null, predictionL)
-    );
-    setPrediction(RESULT_MAPPING[highestPrediction]);
-    navigation.navigate(PLANT_INFO, {
-      prediction: RESULT_MAPPING[highestPrediction],
+    // console.log("IMAGE: ", base64Image);
+    
+    const imgB64 = await FileSystem.readAsStringAsync(base64Image.uri, {
+      encoding: FileSystem.EncodingType.Base64,
     });
+    const imgBuffer = tf.util.encodeString(imgB64, 'base64').buffer;
+    const raw = new Uint8Array(imgBuffer)  
+    const imageTensor = decodeJpeg(raw);
+
+    // const croppedData: any = await cropPicture(base64Image, 350);
+    // const tensor = await convertBase64ToTensor(croppedData.base64);
+    // console.log("TENSOR: ", tensor?.print());
+    // // const croppedData: any = await cropPicture(base64Image, 300);
+    // // const tensor = imageToTensor(croppedData.base64);
+    // console.log("TENSOR: ", tensor?.print());
+    // const predictionL = await startPrediction(model, tensor);
+    // console.log("PREDICTION: ", predictionL);
+    // const highestPrediction = predictionL.indexOf(
+    //   Math.max.apply(null, predictionL)
+    // );
+    // setPrediction(RESULT_MAPPING[highestPrediction]);
+    // navigation.navigate(PLANT_INFO, {
+    //   prediction: RESULT_MAPPING[highestPrediction],
+    // });
   };
 
   const imageToTensor = (rawImageData: Uint8Array) => {
