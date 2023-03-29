@@ -18,6 +18,7 @@ const DetailsContainer = (props: any) => {
   } = props;
 
   const titleContextSplitter = (value: string) => {
+    if(!value) return null;
     const contentArray = value.split("-");
 
     if (contentArray && contentArray.length > 1) {

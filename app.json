@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/mainLogo.png",
     "splash": {
-      "image": "./assets/snapmed.png",
+      "image": "./assets/splash-final.png",
       "resizeMode": "contain",
       "backgroundColor": "#E3FFD1"
     },
@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.clintxx1.snapmedapp"
     },
     "android": {
       "adaptiveIcon": {

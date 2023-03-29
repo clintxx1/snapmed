@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { ScreenContext } from "../../providers/context";
 import { Camera, CameraCapturedPicture } from "expo-camera";
-import { Dimensions, Platform, Image } from "react-native";
+import { Dimensions, Platform, Image, BackHandler } from "react-native";
 import { Text } from "native-base";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import * as tf from "@tensorflow/tfjs";
@@ -16,7 +16,7 @@ import {
   getModel,
   startPrediction,
 } from "../../lib/tensor-helper";
-import { PLANT_INFO } from "../../constants/screen-names";
+import { DASHBOARD, PLANT_INFO } from "../../constants/screen-names";
 import { decodeJpeg } from "@tensorflow/tfjs-react-native";
 
 const RESULT_MAPPING = [
@@ -39,6 +39,7 @@ const CustomCamera = ({ navigation }: any) => {
   const [startCamera, setStartCamera] = useState<boolean>(false);
   const [accuracyPercentage, setAccuracyPercentage] = useState<number|null>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [loaderState, setLoaderState] = useState<string>("Constructing");
   // const [prediction, setPrediction] = useState<any>();
   const [currentPhoto, setCurrentPhoto] = useState<any>();
   let camera = useRef<Camera>();
@@ -190,6 +191,26 @@ const CustomCamera = ({ navigation }: any) => {
     })();
   }, []);
 
+  useEffect(() => {
+    console.log("Trigger", loaderState);
+    
+  }, [loaderState])
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.navigate(DASHBOARD, {keyState: 0})
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  
+
   const takePictureHandler = async () => {
     try {
       if (camera.current) {
@@ -203,10 +224,8 @@ const CustomCamera = ({ navigation }: any) => {
         console.log("PREDICTION: ", res);
         setLoading(false);
         setStartCamera((prev) => !prev);
-        navigation.navigate(PLANT_INFO, {
-          prediction: res,
-          percentage: accuracyPercentage,
-        });
+        navigation.navigate(PLANT_INFO, res);
+        setLoaderState("Constructing");
         /* const options = {
           quality: 0.5,
           base64: true,
@@ -248,18 +267,25 @@ const CustomCamera = ({ navigation }: any) => {
     });
     const predictedData = tf.tidy(() => {
       const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
+      setLoaderState("Constructing");
+      console.log("construct");
       const raw = new Uint8Array(imgBuffer);
       let imageTensor = decodeJpeg(raw);
+      setLoaderState("Decoding");
+      console.log("decode");
       const tensorScaled = imageTensor.expandDims(0).div(127.5).sub(1);
       const img = customCrop(tensorScaled);
+      setLoaderState("Predicting")
+      console.log("predict");
       const predict = model.predict(img);
       let result = predict.dataSync();
-      console.log("ARR: ", result);
       const highestPrediction = result.indexOf(Math.max.apply(null, result));
-      let percent = Math.pow(10,2) * result[highestPrediction]
+      const percent = Math.pow(10,2) * result[highestPrediction]
       console.log("PERCENTAGE: ", percent.toFixed(2));
-      setAccuracyPercentage(Number(percent.toFixed(2)));
-      return RESULT_MAPPING[highestPrediction];
+      return {
+        prediction: highestPrediction,
+        percentage: percent.toFixed(2)
+      }
     });
 
     return predictedData;
@@ -333,6 +359,7 @@ const CustomCamera = ({ navigation }: any) => {
     // prediction,
     currentPhoto,
     loading,
+    loaderState,
   };
 
   return (

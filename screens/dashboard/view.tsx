@@ -6,6 +6,7 @@ import CustomCard from "../../components/card";
 import { buttonColor } from "../../constants/color";
 import Carousel from "react-native-reanimated-carousel";
 import CustomSlide from "../../components/slide";
+import { getPlantDetails } from "../../lib/helper";
 
 const DashboardView = () => {
   const { sampleData, width, searchPlants, plants } = useContext(ScreenContext);
@@ -70,8 +71,8 @@ const DashboardView = () => {
                 justifyContent: "center",
               }}
             >
-              {plants &&
-                plants.map((item: any) => {
+              {getPlantDetails() &&
+                getPlantDetails().map((item: any) => {
                   return (
                     <CustomCard
                       key={item.id}
@@ -79,7 +80,7 @@ const DashboardView = () => {
                       m={"3"}
                       w={200}
                       bg={"amber.100"}
-                      text={item.text}
+                      text={item.name}
                       image={item.image}
                     />
                   );

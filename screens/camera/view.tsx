@@ -1,9 +1,11 @@
 import { Camera, CameraType } from "expo-camera";
 import React, { useContext, useState } from "react";
 import { Heading, HStack, Spinner, Text, View } from "native-base";
-import { Alert, LogBox, TouchableOpacity } from "react-native";
+import { Alert, LogBox, TouchableOpacity} from "react-native";
 import { ScreenContext } from "../../providers/context";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
+import { containerColor, textColor } from "../../constants/color";
+import { useIsFocused } from "@react-navigation/native";
 LogBox.ignoreAllLogs(true);
 const CameraView = () => {
   const {
@@ -13,14 +15,16 @@ const CameraView = () => {
     textureDims,
     handleCameraStream,
     loading,
+    loaderState,
+    startCamera,
   } = useContext(ScreenContext);
   const TensorCamera = cameraWithTensors(Camera);
-  console.log("camera? ", prediction);
+  console.log("camera? ", loaderState);
   const [zoom, setZoom] = useState(0);
-
+  const isFocused = useIsFocused();
   return (
-    <View flex={1} style={{ backgroundColor: "white" }}>
-      {!loading ? (
+    <View flex={1} bgColor={"white"}>
+      {!loading && isFocused ? (
         <Camera
           type={CameraType.back}
           style={{ flex: 1 }}
@@ -140,11 +144,24 @@ const CameraView = () => {
           </View>
         </Camera>
       ) : (
-        <HStack top={'1/2'} space={2} justifyContent="center" alignItems="center" bg={'white'}>
-          <Spinner size="lg" />
-          <Heading color="primary.500" fontSize="md">
-            Predicting image
-          </Heading>
+        <HStack
+          flex={1}
+          flexDirection={"column"}
+          space={2}
+          justifyContent="center"
+          alignItems="center"
+          bg={"white"}
+        >
+          {/* <ActivityIndicator size={"large"}/> */}
+          <Spinner
+            color={textColor}
+            mb={30}
+            size="lg"
+            style={{ transform: [{ scaleX: 2.5 }, { scaleY: 2.5 }] }}
+          />
+          <Text bold color={textColor} fontSize="2xl">
+            Predicting Image
+          </Text>
         </HStack>
       )}
       {/* ):(

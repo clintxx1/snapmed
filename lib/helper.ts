@@ -1,5 +1,15 @@
 import { ACCOUNT, DASHBOARD, FAVORITE, LIST } from "../constants/screen-names";
 import { IconDetails } from "../types";
+import plantsDescription from "../assets/plants.json";
+var akapulko = require("../assets/akapulko.png");
+var ampalaya = require("../assets/plant-icon/ampalaya-transformed.png");
+var bawang = require("../assets/plant-icon/bawang-transformed.png");
+var bayabas = require("../assets/plant-icon/bayabas-transformed.png");
+var lagundi = require("../assets/plant-icon/lagundi-transformed.png");
+var sambong = require("../assets/plant-icon/sambong-transformed.png");
+var tsaangGubat = require("../assets/plant-icon/tsaanggubat-transformed.png");
+var ulasimangBato = require("../assets/plant-icon/ulasimang-bato-transformed.png");
+var yerbaBuena = require("../assets/plant-icon/yerba-buena-transformed.png");
 
 export const GetErrorMessage = (value: string) => {
   let errorMessage = "";
@@ -51,9 +61,9 @@ export const privateScreenToggle = (index: number) => {
 };
 
 export const tabIconHandleChange = (route: any, focused: boolean) => {
-  let iconName:IconDetails = {
+  let iconName: IconDetails = {
     iconText: "",
-    opacity: 0
+    opacity: 0,
   };
   if (route === DASHBOARD) {
     iconName = {
@@ -77,4 +87,26 @@ export const tabIconHandleChange = (route: any, focused: boolean) => {
     };
   }
   return iconName;
+};
+
+export const getPlantDetails = () => {
+  const plantImage = [
+    akapulko,
+    ampalaya,
+    bawang,
+    bayabas,
+    lagundi,
+    sambong,
+    tsaangGubat,
+    ulasimangBato,
+    yerbaBuena,
+  ];  
+  const data = plantsDescription.map((plant, index) => {
+    return {
+      ...plant,
+      image: plantImage[index],
+    };
+  });
+
+  return data;
 };
