@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { ScreenContext } from "../../providers/context";
-import { Camera } from "expo-camera";
+import { Camera, CameraCapturedPicture } from "expo-camera";
 import { Dimensions, Platform, Image } from "react-native";
 import { Text } from "native-base";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
@@ -19,7 +19,17 @@ import {
 import { PLANT_INFO } from "../../constants/screen-names";
 import { decodeJpeg } from "@tensorflow/tfjs-react-native";
 
-const RESULT_MAPPING = ["Akapulko", "Ampalaya", "Bawang", "Bayabas", "Lagundi", "Sambong", "Tsaang-gubat", "Ulasimang-bato", "Yerba-buena"];
+const RESULT_MAPPING = [
+  "Akapulko",
+  "Ampalaya",
+  "Bawang",
+  "Bayabas",
+  "Lagundi",
+  "Sambong",
+  "Tsaang-gubat",
+  "Ulasimang-bato",
+  "Yerba-buena",
+];
 const OUTPUT_TENSOR_WIDTH = 270;
 const OUTPUT_TENSOR_HEIGHT = 480;
 const URL = "https://teachablemachine.withgoogle.com/models/U--trar6n/";
@@ -27,7 +37,9 @@ const { height, width } = Dimensions.get("window");
 const CustomCamera = ({ navigation }: any) => {
   const [model, setModel] = useState<any>();
   const [startCamera, setStartCamera] = useState<boolean>(false);
-  const [prediction, setPrediction] = useState<any>();
+  const [accuracyPercentage, setAccuracyPercentage] = useState<number|null>();
+  const [loading, setLoading] = useState<boolean>(false);
+  // const [prediction, setPrediction] = useState<any>();
   const [currentPhoto, setCurrentPhoto] = useState<any>();
   let camera = useRef<Camera>();
   let context = useRef<CanvasRenderingContext2D>();
@@ -41,45 +53,50 @@ const CustomCamera = ({ navigation }: any) => {
       ? { height: 1920, width: 1080 }
       : { height: 1200, width: 1600 };
 
+  const customCrop = (tensor: any) => {
+    const f =
+      (OUTPUT_TENSOR_HEIGHT - OUTPUT_TENSOR_WIDTH) / 2 / OUTPUT_TENSOR_HEIGHT;
+    const cropped = tf.image.cropAndResize(
+      // Image tensor.
+      tensor,
+      // Boxes. It says we start cropping from (x=0, y=f) to (x=1, y=1-f).
+      // These values are all relative (from 0 to 1).
+      tf.tensor2d([f, 0, 1 - f, 1], [1, 4]),
+      // The first box above
+      [0],
+      // The final size after resize.
+      [224, 224]
+    );
+
+    return cropped;
+  };
+
   const handleCameraStream = async (images: IterableIterator<tf.Tensor3D>) => {
     const loop = async () => {
-      if(frame % computeRecognitionEveryNFrames === 0){
-        const nextImageTensor = images.next().value.expandDims(0).div(127.5).sub(1);
-        
-        const f =
-        (OUTPUT_TENSOR_HEIGHT - OUTPUT_TENSOR_WIDTH) /
-        2 /
-        OUTPUT_TENSOR_HEIGHT;
-        const cropped = tf.image.cropAndResize(
-          // Image tensor.
-          nextImageTensor,
-          // Boxes. It says we start cropping from (x=0, y=f) to (x=1, y=1-f).
-          // These values are all relative (from 0 to 1).
-          tf.tensor2d([f, 0, 1 - f, 1], [1, 4]),
-          // The first box above
-          [0],
-          // The final size after resize.
-          [224, 224]
-          );
-        console.log("YOW", cropped);
-        const results = model.predict(cropped);
+      if (frame % computeRecognitionEveryNFrames === 0) {
+        const nextImageTensor = images
+          .next()
+          .value.expandDims(0)
+          .div(127.5)
+          .sub(1);
+
+        const results = model.predict(customCrop(nextImageTensor));
         const prediction = results.dataSync();
         const highestPrediction = prediction.indexOf(
           Math.max.apply(null, prediction)
         );
 
-        // const imageData2 = tf.image.resizeBilinear(nextImageTensor,[224,224]) 
-        // const prediction = await startPrediction(model, tf.expandDims(imageData2, 0)); 
+        // const imageData2 = tf.image.resizeBilinear(nextImageTensor,[224,224])
+        // const prediction = await startPrediction(model, tf.expandDims(imageData2, 0));
         console.log(RESULT_MAPPING[highestPrediction]);
         tf.dispose([nextImageTensor]);
-        
       }
       frame += 1;
       frame = frame % computeRecognitionEveryNFrames;
-   
-    requestAnimationFrame(loop);
-  }
-  loop();
+
+      requestAnimationFrame(loop);
+    };
+    loop();
     /* const loop = async () => {
       // if (!model || !nextImageTensor)
       // throw new Error("No Model or image tensor");
@@ -164,13 +181,12 @@ const CustomCamera = ({ navigation }: any) => {
         setStartCamera(false);
       }
 
-      tf.setBackend('cpu')
+      tf.setBackend("cpu");
       await tf.ready();
       // tf.getBackend();
       // setModel(await cocoSsd.load());
       // setModel(await tmImage.load(modelURL, metadataURL));
       setModel(await getModel());
-      
     })();
   }, []);
 
@@ -183,8 +199,14 @@ const CustomCamera = ({ navigation }: any) => {
         });
         setCurrentPhoto(imageData);
 
-        processImagePrediction(imageData);
+        const res = await processImagePrediction(imageData);
+        console.log("PREDICTION: ", res);
+        setLoading(false);
         setStartCamera((prev) => !prev);
+        navigation.navigate(PLANT_INFO, {
+          prediction: res,
+          percentage: accuracyPercentage,
+        });
         /* const options = {
           quality: 0.5,
           base64: true,
@@ -213,29 +235,40 @@ const CustomCamera = ({ navigation }: any) => {
         // setShowModal(true)
       }
     } catch (err) {
-      console.log("hehe", err);
+      console.log("ERR: ", err);
     }
     // setPickedImage(image.uri)
     // props.onImageTaken(image.uri)
   };
 
-  const processImagePrediction = async (base64Image: any) => {
-    // console.log("IMAGE: ", base64Image);
-    
+  const processImagePrediction = async (base64Image: CameraCapturedPicture) => {
+    setLoading(true)
     const imgB64 = await FileSystem.readAsStringAsync(base64Image.uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
-    const imgBuffer = tf.util.encodeString(imgB64, 'base64').buffer;
-    const raw = new Uint8Array(imgBuffer)  
-    let imageTensor = decodeJpeg(raw);
-    const scalar = tf.scalar(127.5);
-    imageTensor = tf.image.resizeNearestNeighbor(imageTensor, [224, 224]);
-    const tensorScaled = imageTensor.div(scalar);
-    const img = tf.reshape(tensorScaled, [1, 224, 224, 3]);
+    const predictedData = tf.tidy(() => {
+      const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
+      const raw = new Uint8Array(imgBuffer);
+      let imageTensor = decodeJpeg(raw);
+      const tensorScaled = imageTensor.expandDims(0).div(127.5).sub(1);
+      const img = customCrop(tensorScaled);
+      const predict = model.predict(img);
+      let result = predict.dataSync();
+      console.log("ARR: ", result);
+      const highestPrediction = result.indexOf(Math.max.apply(null, result));
+      let percent = Math.pow(10,2) * result[highestPrediction]
+      console.log("PERCENTAGE: ", percent.toFixed(2));
+      setAccuracyPercentage(Number(percent.toFixed(2)));
+      return RESULT_MAPPING[highestPrediction];
+    });
+
+    return predictedData;
+    // const scalar = tf.scalar(127.5);
+    // imageTensor = tf.image.resizeNearestNeighbor(imageTensor, [224, 224]);
+    // const tensorScaled = imageTensor.div(scalar);
+    // const img = tf.reshape(tensorScaled, [1, 224, 224, 3]);
     // const predict = await model.predict(imageTensor.expandDims(0).div(127.5).sub(1))
-    const predict = await model.predict(img)
-    let result = predict.dataSync();
-    console.log("TENSOR: ", result);
+    // console.log("FINAL RES: ", cleanUpResult?.print());
 
     // const croppedData: any = await cropPicture(base64Image, 350);
     // const tensor = await convertBase64ToTensor(croppedData.base64);
@@ -297,8 +330,9 @@ const CustomCamera = ({ navigation }: any) => {
     camera,
     takePictureHandler,
     renderPrediction,
-    prediction,
+    // prediction,
     currentPhoto,
+    loading,
   };
 
   return (
