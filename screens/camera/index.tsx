@@ -164,8 +164,9 @@ const CustomCamera = ({ navigation }: any) => {
         setStartCamera(false);
       }
 
+      tf.setBackend('cpu')
       await tf.ready();
-      tf.getBackend();
+      // tf.getBackend();
       // setModel(await cocoSsd.load());
       // setModel(await tmImage.load(modelURL, metadataURL));
       setModel(await getModel());
@@ -176,10 +177,10 @@ const CustomCamera = ({ navigation }: any) => {
   const takePictureHandler = async () => {
     try {
       if (camera.current) {
-        const imageData = await camera.current.takePictureAsync();
-        // const imageData = await camera.current.takePictureAsync({
-        //   base64: true,
-        // });
+        // const imageData = await camera.current.takePictureAsync();
+        const imageData = await camera.current.takePictureAsync({
+          base64: true,
+        });
         setCurrentPhoto(imageData);
 
         processImagePrediction(imageData);
@@ -226,7 +227,15 @@ const CustomCamera = ({ navigation }: any) => {
     });
     const imgBuffer = tf.util.encodeString(imgB64, 'base64').buffer;
     const raw = new Uint8Array(imgBuffer)  
-    const imageTensor = decodeJpeg(raw);
+    let imageTensor = decodeJpeg(raw);
+    const scalar = tf.scalar(127.5);
+    imageTensor = tf.image.resizeNearestNeighbor(imageTensor, [224, 224]);
+    const tensorScaled = imageTensor.div(scalar);
+    const img = tf.reshape(tensorScaled, [1, 224, 224, 3]);
+    // const predict = await model.predict(imageTensor.expandDims(0).div(127.5).sub(1))
+    const predict = await model.predict(img)
+    let result = predict.dataSync();
+    console.log("TENSOR: ", result);
 
     // const croppedData: any = await cropPicture(base64Image, 350);
     // const tensor = await convertBase64ToTensor(croppedData.base64);
