@@ -4,12 +4,12 @@ import { ScreenContext } from "../../providers/context";
 import DetailsContainer from "../../components/detailsContainer";
 import DetailsWrapper from "../../components/detailsWrapper";
 import { buttonColor, textColor } from "../../constants/color";
-import { Image } from "react-native";
+import { Alert, Image } from "react-native";
 
 const PlantInfoView = () => {
   const { prediction, handleBackPress, plantInfo } = useContext(ScreenContext);
   console.log("IMAGE: ", plantInfo?.image);
-  
+
   return (
     <View flex={1}>
       <View flex={1} display={"flex"} alignItems={"center"} bgColor={"white"}>
@@ -38,7 +38,7 @@ const PlantInfoView = () => {
                 right: 5,
                 backgroundColor: "transparent",
                 height: 150,
-                width: 150
+                width: 150,
               }}
             />
             <DetailsContainer
@@ -50,10 +50,10 @@ const PlantInfoView = () => {
               hasImage={true}
               subTitle="Botany"
               subTitleContent={plantInfo?.botany}
-          //     subTitleContent="Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-          // dicta quam fuga unde alias? Dolorem ipsum sit mollitia non et alias
-          // molestias consectetur beatae. Ab excepturi veniam nam? Impedit,
-          // officia?"
+              //     subTitleContent="Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
+              // dicta quam fuga unde alias? Dolorem ipsum sit mollitia non et alias
+              // molestias consectetur beatae. Ab excepturi veniam nam? Impedit,
+              // officia?"
             />
           </DetailsWrapper>
           <DetailsWrapper>
@@ -63,10 +63,10 @@ const PlantInfoView = () => {
               hasImage={false}
               subTitle="Properties"
               subTitleContent={plantInfo?.properties}
-          //     subTitleContent="Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-          // dicta quam fuga unde alias? Dolorem ipsum sit mollitia non et alias
-          // molestias consectetur beatae. Ab excepturi veniam nam? Impedit,
-          // officia?"
+              //     subTitleContent="Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
+              // dicta quam fuga unde alias? Dolorem ipsum sit mollitia non et alias
+              // molestias consectetur beatae. Ab excepturi veniam nam? Impedit,
+              // officia?"
             />
           </DetailsWrapper>
           <DetailsWrapper>
@@ -79,18 +79,18 @@ const PlantInfoView = () => {
               isSubTitle2={true}
               subTitle2="Folkloric"
               subTitleContent2={plantInfo?.folkloric}
-            //   subTitleContent2="Lorem ipsum dolor sit 
-            // amet consectetur adipisicing elit.  -Explicabo
-            // dicta quam fuga unde alias? Dolorem -ipsum sit mollitia non et alias
-            // molestias consectetur beatae. Ab- excepturi veniam nam? Impedit,
-            // officia?"
+              //   subTitleContent2="Lorem ipsum dolor sit
+              // amet consectetur adipisicing elit.  -Explicabo
+              // dicta quam fuga unde alias? Dolorem -ipsum sit mollitia non et alias
+              // molestias consectetur beatae. Ab- excepturi veniam nam? Impedit,
+              // officia?"
               isSubTitle3={true}
               subTitle3="Ointment Preparation"
               subTitleContent3={plantInfo?.ointment}
-            //   subTitleContent3="Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-            // dicta quam fuga unde alias? Dolorem ipsum sit mollitia non et alias
-            // molestias consectetur beatae. Ab excepturi veniam nam? Impedit,
-            // officia?"
+              //   subTitleContent3="Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
+              // dicta quam fuga unde alias? Dolorem ipsum sit mollitia non et alias
+              // molestias consectetur beatae. Ab excepturi veniam nam? Impedit,
+              // officia?"
             />
           </DetailsWrapper>
           <View h={"32"}></View>
@@ -113,6 +113,7 @@ const PlantInfoView = () => {
         position="absolute"
         bottom={16}
         alignSelf={"center"}
+        onPress={() => Alert.alert("Favorites", "Not yet implemented.")}
       >
         Add to Favorite
       </Button>

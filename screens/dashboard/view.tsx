@@ -1,19 +1,19 @@
 import React, { useContext } from "react";
-import { Box, ScrollView, Text, Icon, Input, View } from "native-base";
+import { Box, ScrollView, Text, Icon, Input, View, Image } from "native-base";
 import { MaterialIcons } from "react-native-vector-icons";
 import { ScreenContext } from "../../providers/context";
 import CustomCard from "../../components/card";
-import { buttonColor } from "../../constants/color";
+import { buttonColor, containerColor, textColor } from "../../constants/color";
 import Carousel from "react-native-reanimated-carousel";
 import CustomSlide from "../../components/slide";
 import { getPlantDetails } from "../../lib/helper";
 
 const DashboardView = () => {
-  const { sampleData, width, searchPlants, plants } = useContext(ScreenContext);
+  const { carouselData, width, searchPlants, plants, handlePlantClick, searchText } = useContext(ScreenContext);
 
   return (
     <Box flex={1} bg={"white"}>
-      <Box flex={0.9} bg={"white"}>
+      <Box flex={1} bg={"white"}>
         <Text fontSize={32} color={buttonColor} w={180} ml={"5"}>
           Let's find your plants!
         </Text>
@@ -35,6 +35,7 @@ const DashboardView = () => {
             }}
             variant="outline"
             borderStyle={"solid"}
+            value={searchText}
           />
         </Box>
         <ScrollView>
@@ -44,11 +45,14 @@ const DashboardView = () => {
               width={width}
               height={width / 2}
               autoPlay={true}
-              data={sampleData}
+              data={carouselData}
               scrollAnimationDuration={3000}
               // onSnapToItem={(index: any) => console.log("current index:", index)}
               renderItem={({ index }: any) => (
                 <View
+                  flex={1}
+                  flexDir={"row"}
+                  alignItems={"center"}
                   justifyContent={"center"}
                   borderRadius={"md"}
                   borderWidth={"1"}
@@ -57,7 +61,16 @@ const DashboardView = () => {
                   m={"2"}
                   key={index}
                 >
-                  <Text textAlign={"center"}>{sampleData[index].text}</Text>
+                  <Image
+                  source={carouselData[index].image}
+                  alt="image"
+                  size={150}
+                  resizeMode={"contain"}
+                  background={"transparent"}
+                  alignSelf={"center"}
+                  mr={10}
+                />
+                  <Text textAlign={"center"} w={110} color={textColor} fontWeight={200} fontSize={20}>{carouselData[index].text}</Text>
                 </View>
               )}
             />
@@ -69,19 +82,21 @@ const DashboardView = () => {
               contentContainerStyle={{
                 alignItems: "center",
                 justifyContent: "center",
+                marginHorizontal: 5
               }}
             >
-              {getPlantDetails() &&
-                getPlantDetails().map((item: any) => {
+              {plants &&
+                plants.map((item: any, index: number) => {
                   return (
                     <CustomCard
                       key={item.id}
-                      borderRadius={"md"}
-                      m={"3"}
-                      w={200}
-                      bg={"amber.100"}
                       text={item.name}
                       image={item.image}
+                      onPress={() => handlePlantClick(index)}
+                      // borderRadius={"md"}
+                      // m={"3"}
+                      // w={200}
+                      // bg={containerColor}
                     />
                   );
                 })}

@@ -119,11 +119,11 @@ const PrivateScreens = ({ navigation }: any) => {
           tabBarLabel: "Dashboard",
           headerTitle: "Discover",
           headerTitleAlign: "center",
-          headerRight: () => (
-            <Link isUnderlined={false} onPress={handleLogout}>
-              Logout
-            </Link>
-          ),
+          // headerRight: () => (
+          //   <Link isUnderlined={false} onPress={handleLogout}>
+          //     Logout
+          //   </Link>
+          // ),
         }}
         //   headerLeft: () => (
         //     <Icon

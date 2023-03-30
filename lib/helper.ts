@@ -1,7 +1,7 @@
 import { ACCOUNT, DASHBOARD, FAVORITE, LIST } from "../constants/screen-names";
 import { IconDetails } from "../types";
 import plantsDescription from "../assets/plants.json";
-var akapulko = require("../assets/akapulko.png");
+var akapulko = require("../assets/plant-icon/akapulko-transformed.png");
 var ampalaya = require("../assets/plant-icon/ampalaya-transformed.png");
 var bawang = require("../assets/plant-icon/bawang-transformed.png");
 var bayabas = require("../assets/plant-icon/bayabas-transformed.png");

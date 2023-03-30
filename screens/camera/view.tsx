@@ -1,10 +1,10 @@
 import { Camera, CameraType } from "expo-camera";
 import React, { useContext, useState } from "react";
-import { Heading, HStack, Spinner, Text, View } from "native-base";
+import { HStack, Spinner, Text, View } from "native-base";
 import { Alert, LogBox, TouchableOpacity} from "react-native";
 import { ScreenContext } from "../../providers/context";
 import { cameraWithTensors } from "@tensorflow/tfjs-react-native";
-import { containerColor, textColor } from "../../constants/color";
+import { textColor } from "../../constants/color";
 import { useIsFocused } from "@react-navigation/native";
 LogBox.ignoreAllLogs(true);
 const CameraView = () => {
@@ -38,9 +38,10 @@ const CameraView = () => {
               backgroundColor: "#fff",
               width: 70,
               height: 70,
-              bottom: 10,
+              bottom: 50,
               borderRadius: 50,
               alignSelf: "center",
+              zIndex: 9999,
             }}
             onPress={() => takePictureHandler()}
           />
@@ -160,7 +161,7 @@ const CameraView = () => {
             style={{ transform: [{ scaleX: 2.5 }, { scaleY: 2.5 }] }}
           />
           <Text bold color={textColor} fontSize="2xl">
-            Predicting Image
+            Recognizing Image
           </Text>
         </HStack>
       )}

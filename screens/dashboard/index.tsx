@@ -1,75 +1,69 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions } from "react-native";
-import { ACCOUNT, FAVORITE, LIST, LOGIN } from "../../constants/screen-names";
-import { GetErrorMessage, privateScreenToggle } from "../../lib/helper";
+import { Dimensions } from "react-native";
+import { PLANT_INFO } from "../../constants/screen-names";
+import { getPlantDetails } from "../../lib/helper";
 import { ScreenContext, useAuth } from "../../providers/context";
 import DashboardView from "./view";
 
-var akapulko = require("../../assets/akapulks.jpg");
-var ampalaya = require("../../assets/ampalaya-data.jpg");
-var bayabas = require("../../assets/bayabas-dta.jpg");
-var tsaangGubat = require("../../assets/tsaang-gubat-data.jpg");
+var nwssu = require("../../assets/nwssu-transformed.png");
+var cameraIcon = require("../../assets/camera-icon.png");
+var flowerIcon = require("../../assets/flower-pot.png");
+var predictIcon = require("../../assets/predictive-chart.png");
 
-const Dashboard = ({navigation, route}: any) => {
-  const { currentUser } = useAuth();
+const Dashboard = ({ navigation }: any) => {
   const [selected, setSelected] = useState<number>(0);
+  const [searchText, setSearchText] = useState<string>("");
   const width: number = Dimensions.get("window").width;
   const height: number = Dimensions.get("window").height;
-  const sampleData = [
+  const [plants, setPlants] = useState<object[]>(getPlantDetails());
+  const carouselData = [
     {
       id: 1,
-      text: "Sample",
-      image: akapulko,
+      text: "A thesis project created by BSCS",
+      image: nwssu,
     },
     {
       id: 2,
-      text: "Sample1",
-      image: ampalaya,
+      text: "Capture a plant",
+      image: cameraIcon,
     },
     {
       id: 3,
-      text: "Sample2",
-      image: bayabas,
+      text: "Predict the result base on the model",
+      image: predictIcon,
     },
     {
       id: 4,
-      text: "Lorem ipsum",
-      image: tsaangGubat,
-    },
-    {
-      id: 5,
-      text: "dolor sit amet consectetur",
-      image: akapulko,
-    },
-    {
-      id: 6,
-      text: "adipisicing elit",
-      image: ampalaya,
-    },
-    {
-      id: 7,
-      text: "Error labore suscipi",
-      image: bayabas,
-    },
-    {
-      id: 8,
-      text: "Lenim aut eligendi!",
-      image: tsaangGubat,
+      text: "Show results and the medicinal plants info",
+      image: flowerIcon,
     },
   ];
-  const [plants, setPlants] = useState<object[]>(sampleData);
 
   const searchPlants = (plant: string) => {
     if (plant) {
-      const newPlants = sampleData.filter((e: any) =>
-        e.text.toLowerCase().match(plant.toLowerCase())
-      );
-      setPlants(newPlants);
-    }
-    if (!plant) {
-      setPlants(sampleData);
+      setSearchText(plant);
+    } else {
+      setSearchText("");
     }
   };
+
+  const handlePlantClick = (index: number) => {
+    setSearchText("");
+    navigation.navigate(PLANT_INFO, {
+      prediction: index,
+    });
+  };
+
+  useEffect(() => {
+    if (searchText) {
+      const newPlants = plants.filter((e: any) =>
+        e.name.toLowerCase().match(searchText.toLowerCase())
+      );
+      setPlants(newPlants);
+    } else {
+      setPlants(getPlantDetails());
+    }
+  }, [searchText]);
 
   // useEffect(() => {
   //   if(selected !== 0){
@@ -116,16 +110,17 @@ const Dashboard = ({navigation, route}: any) => {
   //     setSelected(keyState);
   //   }
   // }, [route?.params])
-  
 
   const values = {
-    sampleData,
+    carouselData,
     selected,
     setSelected,
     width,
     height,
     searchPlants,
     plants,
+    handlePlantClick,
+    searchText,
   };
   return (
     <ScreenContext.Provider value={values}>

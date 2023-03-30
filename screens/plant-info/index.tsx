@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { TSCAMERA } from "../../constants/screen-names";
+import { DASHBOARD } from "../../constants/screen-names";
 import { getPlantDetails } from "../../lib/helper";
 import { ScreenContext } from "../../providers/context";
 import PlantInfoView from "./view";
 
 const PlantInfo = ({ navigation, route }: any) => {
   const { prediction, percentage } = route?.params ?? "";
-  const [plantInfo, setPlantInfo] = useState<object>({})
+  const [plantInfo, setPlantInfo] = useState<object>({});
   useEffect(() => {
     if (route.params) {
       console.log("trigger", route?.params);
-      setPlantInfo(getPlantDetails()[Number(prediction)])
+      setPlantInfo(getPlantDetails()[Number(prediction)]);
     }
   }, [route]);
 
   const handleBackPress = () => {
-    navigation.navigate(TSCAMERA)
-  }
+    navigation.navigate(DASHBOARD, { keyState: 0 });
+  };
 
   const values = {
     prediction,

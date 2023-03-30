@@ -7,7 +7,7 @@ import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import * as tf from "@tensorflow/tfjs";
 import * as jpeg from "jpeg-js";
 import * as FileSystem from "expo-file-system";
-import * as tmImage from "@teachablemachine/image";
+// import * as tmImage from "@teachablemachine/image";
 import Canvas, { CanvasRenderingContext2D } from "react-native-canvas";
 import CameraView from "./view";
 import {
@@ -37,9 +37,10 @@ const { height, width } = Dimensions.get("window");
 const CustomCamera = ({ navigation }: any) => {
   const [model, setModel] = useState<any>();
   const [startCamera, setStartCamera] = useState<boolean>(false);
+  const [textChange, setTextChange] = useState<string>("")
   const [accuracyPercentage, setAccuracyPercentage] = useState<number|null>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [loaderState, setLoaderState] = useState<string>("Constructing");
+  const [loaderState, setLoaderState] = useState<string>("Constructing Image");
   // const [prediction, setPrediction] = useState<any>();
   const [currentPhoto, setCurrentPhoto] = useState<any>();
   let camera = useRef<Camera>();
@@ -209,7 +210,6 @@ const CustomCamera = ({ navigation }: any) => {
 
     return () => backHandler.remove();
   }, []);
-  
 
   const takePictureHandler = async () => {
     try {
@@ -225,7 +225,7 @@ const CustomCamera = ({ navigation }: any) => {
         setLoading(false);
         setStartCamera((prev) => !prev);
         navigation.navigate(PLANT_INFO, res);
-        setLoaderState("Constructing");
+        setTextChange("Constructing Image");
         /* const options = {
           quality: 0.5,
           base64: true,
@@ -267,15 +267,15 @@ const CustomCamera = ({ navigation }: any) => {
     });
     const predictedData = tf.tidy(() => {
       const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
-      setLoaderState("Constructing");
+      setTextChange("Constructing Image");
       console.log("construct");
       const raw = new Uint8Array(imgBuffer);
       let imageTensor = decodeJpeg(raw);
-      setLoaderState("Decoding");
+      setTextChange("Decoding Image");
       console.log("decode");
       const tensorScaled = imageTensor.expandDims(0).div(127.5).sub(1);
       const img = customCrop(tensorScaled);
-      setLoaderState("Predicting")
+      setTextChange("Recognizing Image")
       console.log("predict");
       const predict = model.predict(img);
       let result = predict.dataSync();
@@ -347,6 +347,12 @@ const CustomCamera = ({ navigation }: any) => {
       </Text>
     );
   };
+
+  useEffect(() => {
+    if(textChange){
+      setLoaderState(textChange)
+    }
+  }, [textChange]);
 
   const values = {
     handleCameraStream,
