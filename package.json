@@ -7,7 +7,7 @@
     "nativebase"
   ],
   "scripts": {
-    "start": "expo start --dev-client",
+    "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -42,7 +42,7 @@
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-hook-form": "^7.36.1",
-    "react-native": "0.69.6",
+    "react-native": "0.69.9",
     "react-native-canvas": "^0.1.38",
     "react-native-dotenv": "^3.4.8",
     "react-native-fs": "^2.20.0",

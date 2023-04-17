@@ -6,6 +6,8 @@ const DetailsContainer = (props: any) => {
   const {
     title = "Lorem",
     scientificName = "Ipsum",
+    hasPercentage,
+    percentage,
     hasTitle,
     subTitle,
     subTitleContent,
@@ -18,7 +20,7 @@ const DetailsContainer = (props: any) => {
   } = props;
 
   const titleContextSplitter = (value: string) => {
-    if(!value) return null;
+    if (!value) return null;
     const contentArray = value.split("-");
 
     if (contentArray && contentArray.length > 1) {
@@ -45,6 +47,14 @@ const DetailsContainer = (props: any) => {
             <Text color={textColor} bold fontSize={18}>
               {title}
             </Text>
+            {hasPercentage && (
+              <Text
+                color={textColor}
+                italic
+                fontSize={12}
+                underline
+              >{`Accuracy: (${percentage}%)`}</Text>
+            )}
             <Text color={fadeText} italic>
               {scientificName}
             </Text>

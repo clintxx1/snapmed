@@ -9,12 +9,12 @@ const PlantInfo = ({ navigation, route }: any) => {
   const [plantInfo, setPlantInfo] = useState<object>({});
   useEffect(() => {
     if (route.params) {
-      console.log("trigger", route?.params);
-      setPlantInfo(getPlantDetails()[Number(prediction)]);
+      setPlantInfo({ ...getPlantDetails()[Number(prediction)], percentage });
     }
   }, [route]);
 
   const handleBackPress = () => {
+    setPlantInfo({});
     navigation.navigate(DASHBOARD, { keyState: 0 });
   };
 

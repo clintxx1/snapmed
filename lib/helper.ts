@@ -1,11 +1,8 @@
 import { ACCOUNT, DASHBOARD, FAVORITE, LIST } from "../constants/screen-names";
 import { IconDetails } from "../types";
 import plantsDescription from "../assets/plants.json";
-var akapulko = require("../assets/plant-icon/akapulko-transformed.png");
 var ampalaya = require("../assets/plant-icon/ampalaya-transformed.png");
 var bawang = require("../assets/plant-icon/bawang-transformed.png");
-var bayabas = require("../assets/plant-icon/bayabas-transformed.png");
-var lagundi = require("../assets/plant-icon/lagundi-transformed.png");
 var sambong = require("../assets/plant-icon/sambong-transformed.png");
 var tsaangGubat = require("../assets/plant-icon/tsaanggubat-transformed.png");
 var ulasimangBato = require("../assets/plant-icon/ulasimang-bato-transformed.png");
@@ -91,16 +88,13 @@ export const tabIconHandleChange = (route: any, focused: boolean) => {
 
 export const getPlantDetails = () => {
   const plantImage = [
-    akapulko,
     ampalaya,
     bawang,
-    bayabas,
-    lagundi,
     sambong,
     tsaangGubat,
     ulasimangBato,
     yerbaBuena,
-  ];  
+  ];
   const data = plantsDescription.map((plant, index) => {
     return {
       ...plant,

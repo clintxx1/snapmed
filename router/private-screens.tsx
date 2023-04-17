@@ -4,25 +4,20 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 
 /**Constants */
 import {
-  ACCOUNT,
   DASHBOARD,
-  FAVORITE,
   LIST,
   PLANT_INFO,
   TSCAMERA,
 } from "../constants/screen-names";
 
 import Dashboard from "../screens/dashboard";
-import { Icon, Image, Link } from "native-base";
+import { Icon, Image } from "native-base";
 import { useAuth } from "../providers/context";
 import { Alert, TouchableOpacity, View } from "react-native";
-import Favorite from "../screens/favorite";
-import Account from "../screens/account";
 import List from "../screens/list";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { tabIconHandleChange } from "../lib/helper";
 import CustomCamera from "../screens/camera";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import PlantInfo from "../screens/plant-info";
 
 const CustomTabButton = ({ children, onPress }: any) => {
@@ -51,7 +46,6 @@ const CustomTabButton = ({ children, onPress }: any) => {
           backgroundColor: "green",
           alignItems: "center",
           justifyContent: "center",
-
         }}
       >
         {children}
@@ -76,9 +70,7 @@ const PrivateScreens = ({ navigation }: any) => {
   return (
     <PrivateStack.Navigator
       screenOptions={({ route }) => ({
-        tabBarButton: [
-          PLANT_INFO,
-        ].includes(route.name)
+        tabBarButton: [PLANT_INFO].includes(route.name)
           ? () => {
               return null;
             }
@@ -119,25 +111,6 @@ const PrivateScreens = ({ navigation }: any) => {
           tabBarLabel: "Dashboard",
           headerTitle: "Discover",
           headerTitleAlign: "center",
-          // headerRight: () => (
-          //   <Link isUnderlined={false} onPress={handleLogout}>
-          //     Logout
-          //   </Link>
-          // ),
-        }}
-        //   headerLeft: () => (
-        //     <Icon
-        //         as={<MaterialIcons name="menu" />}
-        //         color="gray.300"
-        //         size="sm"
-        //       />
-        //   ),
-      />
-      <PrivateStack.Screen
-        name={FAVORITE}
-        component={Favorite}
-        options={{
-          tabBarLabel: "Favorite",
         }}
       />
       <PrivateStack.Screen
@@ -145,6 +118,8 @@ const PrivateScreens = ({ navigation }: any) => {
         component={CustomCamera}
         options={{
           tabBarLabel: "",
+          headerTitle: "Camera",
+          headerTitleAlign: "center",
           tabBarIcon: ({ focused }) => (
             <Image
               source={require("../assets/camera.png")}
@@ -158,9 +133,12 @@ const PrivateScreens = ({ navigation }: any) => {
             />
           ),
           tabBarButton: (props) => (
-            <CustomTabButton {...props} onPress={() => navigation.navigate(TSCAMERA)} />
+            <CustomTabButton
+              {...props}
+              onPress={() => navigation.navigate(TSCAMERA)}
+            />
           ),
-          tabBarStyle: {display: 'none'}
+          tabBarStyle: { display: "none" },
         }}
       />
       <PrivateStack.Screen
@@ -168,20 +146,15 @@ const PrivateScreens = ({ navigation }: any) => {
         component={List}
         options={{
           tabBarLabel: "List",
-        }}
-      />
-      <PrivateStack.Screen
-        name={ACCOUNT}
-        component={Account}
-        options={{
-          tabBarLabel: "Account",
+          headerTitle: "List of Medicinal Plants",
+          headerTitleAlign: "center"
         }}
       />
       <PrivateStack.Screen
         name={PLANT_INFO}
         component={PlantInfo}
         options={{
-          tabBarStyle: {display: 'none'}
+          tabBarStyle: { display: "none" },
         }}
       />
     </PrivateStack.Navigator>

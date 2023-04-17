@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { PLANT_INFO } from "../../constants/screen-names";
 import { getPlantDetails } from "../../lib/helper";
-import { ScreenContext, useAuth } from "../../providers/context";
+import { ScreenContext } from "../../providers/context";
 import DashboardView from "./view";
 
 var nwssu = require("../../assets/nwssu-transformed.png");

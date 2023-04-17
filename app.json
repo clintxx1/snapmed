@@ -23,7 +23,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/mainLogo.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#FFFFFF",
+        "resizeMode": "contain"
       },
       "package": "com.clintxx1.snapmedapp"
     },
