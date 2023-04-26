@@ -3,6 +3,7 @@ import { IconDetails } from "../types";
 import plantsDescription from "../assets/plants.json";
 var ampalaya = require("../assets/plant-icon/ampalaya-transformed.png");
 var bawang = require("../assets/plant-icon/bawang-transformed.png");
+var lagundi = require("../assets/plant-icon/lagundi-transformed.png");
 var sambong = require("../assets/plant-icon/sambong-transformed.png");
 var tsaangGubat = require("../assets/plant-icon/tsaanggubat-transformed.png");
 var ulasimangBato = require("../assets/plant-icon/ulasimang-bato-transformed.png");
@@ -90,6 +91,7 @@ export const getPlantDetails = () => {
   const plantImage = [
     ampalaya,
     bawang,
+    lagundi,
     sambong,
     tsaangGubat,
     ulasimangBato,
